@@ -1,12 +1,33 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import './index.scss';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import { Auth0Provider } from '@auth0/auth0-react';
+import authConfig from './auth_config.json';
+import history from "./utils/history";
+
+const onRedirectCallback = (appState) => {
+  console.log('appState: ', appState)
+  history.replace(appState?.returnTo || window.location.pathname);
+  window.history.replaceState(
+    {},
+    document.title,
+    appState?.returnTo || window.location.pathname
+  );
+};
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Auth0Provider
+      domain={authConfig.domain}
+      clientId={authConfig.clientId}
+      audience={authConfig.audience}
+      redirectUri={window.location.origin}
+      onRedirectCallback={onRedirectCallback}
+    >
+      <App />
+    </Auth0Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

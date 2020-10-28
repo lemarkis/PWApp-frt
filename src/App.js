@@ -1,25 +1,33 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Route, Router, Switch } from 'react-router-dom';
+import history from "./utils/history";
+import { useAuth0 } from "@auth0/auth0-react";
 
-function App() {
+import Home from './views/Home';
+import NavBar from './components/Navbar';
+import Loading from './components/Loading';
+import { Container } from 'react-bootstrap';
+
+const App = () => {
+  const { isLoading, error } = useAuth0();
+
+  if (error) {
+    console.log('AppLog ', error);
+  }
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router history={history}>
+      <NavBar />
+      <Container className="mt-5r">
+        <Switch>
+          <Route exact path="/" component={Home} />
+        </Switch>
+      </Container>
+    </Router>
   );
 }
 
