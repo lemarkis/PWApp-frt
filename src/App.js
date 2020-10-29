@@ -22,7 +22,7 @@ const App = () => {
   return (
     <Router history={history}>
       <NavBar />
-      <Container className="mt-5r">
+      <Container className="mt-6r">
         <Switch>
           <Route exact path="/" component={Home} />
         </Switch>
