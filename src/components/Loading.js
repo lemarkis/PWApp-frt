@@ -4,15 +4,16 @@ import loading from "../assets/loading.svg";
 
 const Loading = () => (
   <Container fluid>
-    <Row className="justify-content-md-center">
-      <Col xs="5">
+    <Row className="justify-content-center">
+      <Col />
+      <Col xs="auto">
         <img
           src={loading}
           alt="Loading"
-          className="img-fluid w-50 mx-auto"
-          width={50}
+          width={100}
         />
       </Col>
+      <Col />
     </Row>
   </Container>
 );
