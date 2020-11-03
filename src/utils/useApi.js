@@ -1,4 +1,4 @@
-import { OAuthError, useAuth0 } from "@auth0/auth0-react";
+import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect, useRef } from "react";
 import axios from "axios";
 
