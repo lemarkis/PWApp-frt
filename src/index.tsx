@@ -5,7 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 import { Auth0Provider } from '@auth0/auth0-react';
-import authConfig from './auth/auth_config.json';
+import authConfig from './configs/auth.config.json';
 import history from "./utils/history";
 
 import './index.scss';
