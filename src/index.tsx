@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-import { Auth0Provider } from '@auth0/auth0-react';
+import {Auth0Provider} from '@auth0/auth0-react';
 import authConfig from './configs/auth.config.json';
 import history from "./utils/history";
 
@@ -12,26 +12,26 @@ import './index.scss';
 
 
 const onRedirectCallback = (appState: any) => {
-    console.log('appState: ', appState)
-    history.replace(appState?.returnTo || window.location.pathname);
-    window.history.replaceState(
-        {},
-        document.title,
-        appState?.returnTo || window.location.pathname
-    );
+  console.log('appState: ', appState)
+  history.replace(appState?.returnTo || window.location.pathname);
+  window.history.replaceState(
+    {},
+    document.title,
+    appState?.returnTo || window.location.pathname
+  );
 };
 
 ReactDOM.render(
   <React.StrictMode>
-      <Auth0Provider
-          domain={authConfig.domain}
-          clientId={authConfig.clientId}
-          audience={authConfig.audience}
-          redirectUri={window.location.origin}
-          onRedirectCallback={onRedirectCallback}
-      >
-          <App />
-      </Auth0Provider>
+    <Auth0Provider
+      domain={authConfig.domain}
+      clientId={authConfig.clientId}
+      audience={authConfig.audience}
+      redirectUri={window.location.origin}
+      onRedirectCallback={onRedirectCallback}
+    >
+      <App/>
+    </Auth0Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

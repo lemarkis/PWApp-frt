@@ -1,0 +1,15 @@
+.input-group>.input-group-prepend {
+    flex: 0 0 21%;
+}
+.input-group-text {
+    width: 100%;
+}
+
+.input-group {
+    width: 90% !important;
+}
+
+#deadlineInput {
+    height: 40px !important;
+    width: 220%;
+}

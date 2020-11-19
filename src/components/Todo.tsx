@@ -15,6 +15,13 @@ interface TodoComponent {
     description: string;
     deadline: Date | undefined;
     location: string | undefined;
+    picture: undefined
+}
+
+interface Location {
+    address: string | undefined;
+    long: number | undefined,
+    let: number | undefined
 }
 
 interface State {

@@ -11,7 +11,7 @@ import Home from './Home';
 
 
 import './App.css';
-import { Notifications } from 'react-push-notification';
+import {Notifications} from 'react-push-notification';
 
 function App() {
   const {isLoading, error} = useAuth0();
@@ -23,16 +23,16 @@ function App() {
     return <Loading/>;
   }
   return (
-      <Router history={history}>
-        <NavBar/>
-          <Notifications />
-          <Container className="mt-6r">
-          <Switch>
-            <Route exact path="/" component={Home}/>
-            {/*<Route exact path="/test" component={Test}/>*/}
-          </Switch>
-        </Container>
-      </Router>
+    <Router history={history}>
+      <Notifications position={"top-right"}/>
+      <NavBar/>
+      <Container className="mt-6r">
+        <Switch>
+          <Route exact path="/" component={Home}/>
+          {/*<Route exact path="/test" component={Test}/>*/}
+        </Switch>
+      </Container>
+    </Router>
   );
 }
 
