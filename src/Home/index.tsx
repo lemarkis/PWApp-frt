@@ -16,8 +16,8 @@ interface Todo {
   title: string;
   description: string;
   deadline: Date | undefined;
-  location?: string | undefined;
-  pcture?: string;
+  location?: string;
+  picture?: string;
 }
 
 interface State {
@@ -37,7 +37,7 @@ export default class Home extends React.Component<Props, State> {
         description: ``,
         deadline: undefined,
         location: undefined,
-        picture: undefined
+        picture: ''
       },
       todoList: [
         {
@@ -47,7 +47,7 @@ export default class Home extends React.Component<Props, State> {
           description: `Hello meeting`,
           deadline: undefined,
           location: undefined,
-          picture: undefined
+          picture: ''
         },
         {
           id: 1,

@@ -2,8 +2,8 @@ import React from 'react';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from 'axios';
-import {Button, Col, Form, FormControl, FormGroup, InputGroup, Modal, Row} from "react-bootstrap";
-import Camera, {IMAGE_TYPES} from 'react-html5-camera-photo';
+import {Button, Col, Container, Form, FormControl, FormGroup, InputGroup, Modal, Row} from "react-bootstrap";
+import Camera, {FACING_MODES, IMAGE_TYPES} from 'react-html5-camera-photo';
 import ReactQuill from 'react-quill'; // ES6
 import 'react-html5-camera-photo/build/css/index.css';
 import 'react-quill/dist/quill.snow.css'; // ES6
@@ -14,6 +14,7 @@ interface Props {
   onHide: any
   show: boolean
 }
+
 interface TodoComponent {
   id?: number;
   category?: string;
@@ -25,6 +26,7 @@ interface TodoComponent {
   picture?: string;
   // arrival: Location | undefined;
 }
+
 interface State {
   category?: string;
   title?: string;
@@ -33,6 +35,7 @@ interface State {
   location?: string,
   isAuthorized?: boolean,
 }
+
 interface Location {
   address?: string
   long?: number,
@@ -42,7 +45,6 @@ interface Location {
 export default class Forms extends React.Component<Props, State> {
   constructor(props: any) {
     super(props);
-    const geo = this.getAddressFromLongLat();
     this.state = {
       category: this.props.todo.category,
       title: this.props.todo.title,
@@ -52,11 +54,6 @@ export default class Forms extends React.Component<Props, State> {
     }
     this.handleChange = this.handleChange.bind(this)
     console.log(this.props)
-  }
-
-  getAddressFromLongLat = () => {
-    console.log("----------------------------------- 3")
-    return "HELLO"
   }
 
   handleChange(e: any, key: string) {
@@ -95,11 +92,11 @@ export default class Forms extends React.Component<Props, State> {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Row className="align-middle">
-            <Col>
+          <Row>
+            <Col className="align-self-center mr-auto">
               <Form>
-                <Row className="justify-content-center">
-                  <Col>
+                <Row>
+                  <Col md={{span: 5, offset: 2}} className="mr-auto text-center">
                     {this.state.isAuthorized
                       ? <></>
                       : <Form.Group as={Row}>
@@ -112,13 +109,20 @@ export default class Forms extends React.Component<Props, State> {
                         />
                       </Form.Group>
                     }
-                  </Col>
-                  <Col xs={1}> Or </Col>
-                  <Col>
+                  </Col> {this.state.isAuthorized
+                  ? <></>
+                  : <Col xs={1}> Or </Col>
+                }
+                  <Col className="text-center">
                     {this.state.isAuthorized
-                      ? <Camera imageType={IMAGE_TYPES.JPG}
+                      ? <Container>
+                        <Camera imageType={IMAGE_TYPES.JPG}
                                 imageCompression={1}
-                                onTakePhoto={(e) => { this.handleTakePhoto(e);}}/>
+                                onTakePhoto={(e) => {
+                                  this.handleTakePhoto(e);
+                                }}/>
+                        <Button variant="light" onClick={() => this.setState({isAuthorized: false})}>Return</Button>
+                      </Container>
                       : <Button onClick={() => this.setState({isAuthorized: true})}> Take picture</Button>}
                   </Col>
                 </Row>
@@ -154,12 +158,32 @@ export default class Forms extends React.Component<Props, State> {
                   </InputGroup.Prepend>
                   <ReactQuill
                     theme="snow"
-                              value={this.state.description}
-                              onChange={(e) => this.handleChangeDescription(e)} />
+                    value={this.state.description}
+                    modules={{
+                      toolbar: [
+                        [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
+                        [{size: []}],
+                        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+                        [{'list': 'ordered'}, {'list': 'bullet'},
+                          {'indent': '-1'}, {'indent': '+1'}],
+                        ['link', 'image', 'video'],
+                        ['clean']
+                      ],
+                      clipboard: {
+                        // toggle to add extra line breaks when pasting HTML:
+                        matchVisual: false,
+                      }}}
+                    formats= {['header', 'font', 'size',
+                      'bold', 'italic', 'underline', 'strike', 'blockquote',
+                      'list', 'bullet', 'indent',
+                      'link', 'image', 'video']}
+                    onChange={(e) => this.handleChangeDescription(e)}/>
                   {/*<FormControl defaultValue={this.props.todo.description}*/}
                   {/*             onChange={(e) => this.handleChange(e, "description")} as="textarea"*/}
                   {/*             aria-label="With textarea"/>*/}
                 </InputGroup>
+                <br/>
+                <br/>
                 <br/>
                 <InputGroup>
                   <InputGroup.Prepend>

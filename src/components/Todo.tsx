@@ -14,8 +14,8 @@ interface TodoComponent {
     title: string;
     description: string;
     deadline: Date | undefined;
-    location: string | undefined;
-    picture: undefined
+    location?: string;
+    picture?: string
 }
 
 interface Location {

@@ -11,5 +11,10 @@
 
 #deadlineInput {
     height: 40px !important;
-    width: 220%;
+    width: 100%;
 }
+
+#cam {
+    background: #61dafb;
+}
+
