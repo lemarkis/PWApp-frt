@@ -3,10 +3,10 @@ import axios, { AxiosInstance } from "axios";
 import { useAuth0 } from '@auth0/auth0-react';
 
 export interface IAPIContext {
-  api: AxiosInstance | null;
+  api: AxiosInstance;
 }
 
-const APIContext = createContext<IAPIContext>({ api: null });
+const APIContext = createContext<IAPIContext>({ api: axios.create() });
 
 export interface APIProviderProps {
   children?: React.ReactNode;
@@ -15,7 +15,7 @@ export interface APIProviderProps {
 
 export const APIProvider = (props: APIProviderProps): JSX.Element => {
   const { children, apiUrl } = props;
-  const { isAuthenticated, getAccessTokenSilently, loginWithRedirect } = useAuth0();
+  const { isLoading, isAuthenticated, getAccessTokenSilently, loginWithRedirect } = useAuth0();
 
   const api = axios.create({
     baseURL: apiUrl,
@@ -25,16 +25,15 @@ export const APIProvider = (props: APIProviderProps): JSX.Element => {
     let reqInterId = 0;
     let resInterId = 0;
 
-    if (isAuthenticated) {
+    if (!isLoading && isAuthenticated) {
       reqInterId = api.interceptors.request.use(async cfg => {
         const token = await getAccessTokenSilently();
         cfg.headers.authorization = `Bearer ${token}`;
         cfg.cancelToken = axios.CancelToken.source().token;
         return cfg;
       });
-      resInterId = api.interceptors.request.use(undefined, async err => {
-        console.log('response intercerptor: ', err);
-        if (err.config && err.response && err.response.status === 401) {
+      resInterId = api.interceptors.response.use(undefined, async err => {
+        if (err.message.includes('401')) {
           await loginWithRedirect({
             redirectUri: window.location.href,
           });
@@ -44,12 +43,12 @@ export const APIProvider = (props: APIProviderProps): JSX.Element => {
     }
 
     return () => {
-      if (isAuthenticated && reqInterId && resInterId) {
+      if (/* isAuthenticated && */ reqInterId && resInterId) {
         api.interceptors.request.eject(reqInterId);
         api.interceptors.response.eject(resInterId);
       }
     };
-  });
+  }, [isLoading, api.interceptors.request, api.interceptors.response, getAccessTokenSilently, loginWithRedirect, isAuthenticated]);
 
   return (
     <APIContext.Provider

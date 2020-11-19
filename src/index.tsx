@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 // import reportWebVitals from './reportWebVitals';
 
 import { Auth0Provider } from '@auth0/auth0-react';
-import { APIProvider } from './contexts/api.context';
 import authConfig from './configs/auth.config.json';
 import history from "./utils/history";
 
@@ -29,9 +28,7 @@ ReactDOM.render(
       redirectUri={window.location.origin}
       onRedirectCallback={onRedirectCallback}
     >
-      <APIProvider apiUrl={process.env.REACT_APP_API_URL} >
-        <App />
-      </APIProvider>
+      <App />
     </Auth0Provider>
   </React.StrictMode>,
   document.getElementById('root')
