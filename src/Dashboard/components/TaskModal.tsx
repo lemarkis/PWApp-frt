@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
-import { Button, Col, Form, InputGroup, Modal } from 'react-bootstrap';
-import { ITask } from '../../models/task.model';
+import React, {useState} from 'react';
+import {Button, Col, Container, Form, FormGroup, InputGroup, Modal, Row} from 'react-bootstrap';
+import {ITask} from '../../models/task.model';
 import DatePicker from 'react-datepicker';
 
 import "react-datepicker/dist/react-datepicker.css";
-import { useAPI } from '../../contexts/api.context';
+import {useAPI} from '../../contexts/api.context';
+import Camera, {IMAGE_TYPES} from "react-html5-camera-photo";
+import ReactQuill from 'react-quill'; // ES6
+import 'react-html5-camera-photo/build/css/index.css';
+import 'react-quill/dist/quill.snow.css'; // ES6
+import '../../index.scss';
 
 interface TaskModalProps {
   task: ITask;
@@ -14,18 +19,28 @@ interface TaskModalProps {
 }
 
 export default function TaskModal(props: TaskModalProps): JSX.Element {
-  const { task, setTask, show, onHide } = props;
-  const { api } = useAPI();
+  const {task, setTask, show, onHide} = props;
+  const {api} = useAPI();
+  const [isAuthorized, setAuthorized] = useState(false)
 
-  const handleChange = ({ target }: React.ChangeEvent<HTMLInputElement>): void => {
-    setTask({ ...task, [target.name]: target.value });
+  const handleChange = ({target}: React.ChangeEvent<HTMLInputElement>): void => {
+    setTask({...task, [target.name]: target.value});
   }
 
   const handleDeadlineChange = (deadline: Date, e: React.SyntheticEvent): void => {
-    setTask({ ...task, deadline});
+    setTask({...task, ["deadline"]: deadline});
+  }
+  const  handleChangeDescription = (value: string): void => {
+    setTask({...task, ["description"]: value})
+  }
+  const handleTakePhoto = (profilePicture: string) => {
+    console.log('takePhoto');
+    setTask( {...task, profilePicture})
   }
 
+
   const submitTask = (e: React.FormEvent): void => {
+    console.log(e)
     e.preventDefault();
     api.post('/api/task', task);
     onHide();
@@ -44,95 +59,154 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
     <Modal
       show={show}
       onHide={onHide}
+      size="xl"
       centered
-      size="lg"
     >
       <Modal.Header closeButton>
         <Modal.Title id="taskModal">What's next ?</Modal.Title>
       </Modal.Header>
       <Form onSubmit={submitTask}>
         <Modal.Body>
-          <Form.Row>
-            <Form.Group as={Col}>
-              <InputGroup>
-                <InputGroup.Prepend>
-                  <InputGroup.Text id="category">Catégorie</InputGroup.Text>
-                </InputGroup.Prepend>
-                <Form.Control
-                  name="category"
-                  as="select"
-                  onChange={handleChange}
-                  value={task.category}
-                >
-                  <option value="task">Tâche</option>
-                  <option value="meeting">Réunion</option>
-                </Form.Control>
-              </InputGroup>
-            </Form.Group>
-          </Form.Row>
-          <Form.Row>
-            <Form.Group as={Col}>
-              <InputGroup>
-                <InputGroup.Prepend>
-                  <InputGroup.Text id="title">Titre</InputGroup.Text>
-                </InputGroup.Prepend>
-                <Form.Control
-                  name="title"
-                  value={task.title}
-                  onChange={handleChange}
-                />
-              </InputGroup>
-            </Form.Group>
-          </Form.Row>
-          <Form.Row>
-            <Form.Group as={Col}>
-              <InputGroup>
-                <InputGroup.Prepend>
-                  <InputGroup.Text id="description">Description</InputGroup.Text>
-                </InputGroup.Prepend>
-                <Form.Control
-                  name="description"
-                  as="textarea"
-                  value={task.description}
-                  onChange={handleChange}
-                />
-              </InputGroup>
-            </Form.Group>
-          </Form.Row>
-          <Form.Row>
-            <Form.Group as={Col}>
-              <InputGroup>
-                <InputGroup.Prepend>
-                  <InputGroup.Text id="deadline">Date d'échéance</InputGroup.Text>
-                </InputGroup.Prepend>
-                <DatePicker
-                  selected={task.deadline}
-                  onChange={handleDeadlineChange}
-                  locale="fr-FR"
-                  timeIntervals={15}
-                  showTimeSelect
-                  dateFormat="dd MMM yyyy HH:mm"
-                  // customInput={<DateInput />}
-                />
-              </InputGroup>
-            </Form.Group>
-          </Form.Row>
-          {task.category === "meeting" &&
-          <Form.Row>
-            <Form.Group as={Col}>
-              <InputGroup>
-                <InputGroup.Prepend>
-                  <InputGroup.Text id="location">Localisation</InputGroup.Text>
-                </InputGroup.Prepend>
-                <Form.Control
-                  name="location"
-                  value={task.location}
-                  onChange={handleChange}
-                />
-              </InputGroup>
-            </Form.Group>
-          </Form.Row>
-          }
+          <Row>
+            <Col className="align-self-center mr-auto">
+              <Form>
+                <Row>
+                  <Col md={{span: 5, offset: 2}} className="mr-auto text-center">
+                    {isAuthorized
+                      ? <></>
+                      : <Form.Group as={Row}>
+                        <Form.File
+                          type="file"
+                          className="custom-file-label"
+                          id="inputGroupFile01"
+                          label="Upload File"
+                          custom
+                        />
+                      </Form.Group>
+                    }
+                  </Col> {isAuthorized
+                  ? <></>
+                  : <Col xs={1}> Or </Col>
+                }
+                  <Col className="text-center">
+                    {isAuthorized
+                      ? <Container>
+                        <Camera imageType={IMAGE_TYPES.JPG}
+                                imageCompression={1}
+                                onTakePhoto={(e) => {
+                                  handleTakePhoto(e);
+                                }}/>
+                        <Button variant="light" onClick={() => setAuthorized(false)}>Return</Button>
+                      </Container>
+                      : <Button onClick={() => setAuthorized(true)}> Take picture</Button>}
+                  </Col>
+                </Row>
+              </Form>
+            </Col>
+            <Col>
+              <Form.Row>
+                <Form.Group as={Col}>
+                  <InputGroup>
+                    <InputGroup.Prepend>
+                      <InputGroup.Text id="category">Catégorie</InputGroup.Text>
+                    </InputGroup.Prepend>
+                    <Form.Control
+                      name="category"
+                      as="select"
+                      onChange={handleChange}
+                      value={task.category}
+                    >
+                      <option value="task">Tâche</option>
+                      <option value="meeting">Réunion</option>
+                    </Form.Control>
+                  </InputGroup>
+                </Form.Group>
+              </Form.Row>
+              <Form.Row>
+                <Form.Group as={Col}>
+                  <InputGroup>
+                    <InputGroup.Prepend>
+                      <InputGroup.Text id="title">Titre</InputGroup.Text>
+                    </InputGroup.Prepend>
+                    <Form.Control
+                      name="title"
+                      value={task.title}
+                      onChange={handleChange}
+                    />
+                  </InputGroup>
+                </Form.Group>
+              </Form.Row>
+              <Form.Row>
+                <Form.Group as={Col}>
+                  <InputGroup>
+                    <InputGroup.Prepend>
+                      <InputGroup.Text id="description">Description</InputGroup.Text>
+                    </InputGroup.Prepend>
+                    <ReactQuill
+                    theme="snow"
+                    value={task.description}
+                    modules={{
+                    toolbar: [
+                      [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
+                      [{size: []}],
+                      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+                      [{'list': 'ordered'}, {'list': 'bullet'},
+                        {'indent': '-1'}, {'indent': '+1'}],
+                      ['link', 'image', 'video'],
+                      ['clean']
+                    ],
+                    clipboard: {
+                      // toggle to add extra line breaks when pasting HTML:
+                      matchVisual: false,
+                    }}}
+                    formats= {['header', 'font', 'size',
+                    'bold', 'italic', 'underline', 'strike', 'blockquote',
+                    'list', 'bullet', 'indent',
+                    'link', 'image', 'video']}
+                    onChange={handleChangeDescription}
+                    />
+                  </InputGroup>
+                  <br/>
+                  <br/>
+                  <br/>
+                </Form.Group>
+              </Form.Row>
+              <Form.Row>
+                <Form.Group as={Col}>
+                  <InputGroup>
+                    <InputGroup.Prepend>
+                      <InputGroup.Text id="deadline">Date d'échéance</InputGroup.Text>
+                    </InputGroup.Prepend>
+                    <DatePicker
+                      selected={task.deadline}
+                      onChange={handleDeadlineChange}
+                      locale="fr-FR"
+                      timeIntervals={15}
+                      showTimeSelect
+                      dateFormat="dd MMM yyyy HH:mm"
+                      // customInput={<DateInput />}
+                    />
+                  </InputGroup>
+                </Form.Group>
+              </Form.Row>
+              {task.category === "meeting" &&
+              <Form.Row>
+                  <Form.Group as={Col}>
+                      <InputGroup>
+                          <InputGroup.Prepend>
+                              <InputGroup.Text id="location">Localisation</InputGroup.Text>
+                          </InputGroup.Prepend>
+                          <Form.Control
+                              name="location"
+                              value={task.location}
+                              onChange={handleChange}
+                          />
+                      </InputGroup>
+                  </Form.Group>
+              </Form.Row>
+              }
+            </Col>
+          </Row>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="danger" onClick={onHide}>Annuler</Button>

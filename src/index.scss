@@ -9,3 +9,23 @@ $spacers: (
 @import "../node_modules/bootswatch/dist/darkly/variables";
 @import "../node_modules/bootstrap/scss/bootstrap";
 @import "../node_modules/bootswatch/dist/darkly/bootswatch";
+
+.input-group>.input-group-prepend {
+  flex: 0 0 22%;
+}
+.input-group-text {
+  width: 100%;
+}
+
+.input-group {
+  width: 90% !important;
+}
+
+#deadlineInput {
+  height: 40px !important;
+  width: 100%;
+}
+
+#cam {
+  background: #61dafb;
+}
