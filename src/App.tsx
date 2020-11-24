@@ -2,7 +2,6 @@ import React from 'react';
 import { Route, Router, Switch } from 'react-router-dom';
 import history from "./utils/history";
 import { useAuth0 } from "@auth0/auth0-react";
-import { APIProvider } from './contexts/api.context';
 
 import { Notifications } from 'react-push-notification';
 import { Container } from 'react-bootstrap';
@@ -23,17 +22,15 @@ export default function App(): JSX.Element {
   }
 
   return (
-    <APIProvider apiUrl={process.env.REACT_APP_API_URL} >
-      <Router history={history}>
-        <NavBar/>
-        <Notifications />
-        <Container className="mt-6r">
-          <Switch>
-            <Route exact path="/" component={isAuthenticated ? Dashboard : Home} />
-            {/*<Route exact path="/test" component={Test} />*/}
-          </Switch>
-        </Container>
-      </Router>
-    </APIProvider>
+    <Router history={history}>
+      <NavBar/>
+      <Notifications />
+      <Container className="mt-6r">
+        <Switch>
+          <Route exact path="/" component={isAuthenticated ? Dashboard : Home} />
+          {/*<Route exact path="/test" component={Test} />*/}
+        </Switch>
+      </Container>
+    </Router>
   );
 }

@@ -4,12 +4,12 @@ import {ITask} from '../../models/task.model';
 import DatePicker from 'react-datepicker';
 
 import "react-datepicker/dist/react-datepicker.css";
-import {useAPI} from '../../contexts/api.context';
 import Camera, {IMAGE_TYPES} from "react-html5-camera-photo";
 import ReactQuill from 'react-quill'; // ES6
 import 'react-html5-camera-photo/build/css/index.css';
 import 'react-quill/dist/quill.snow.css'; // ES6
-import '../../index.scss';
+import { useAuth0 } from '@auth0/auth0-react';
+import api from '../../utils/api';
 
 interface TaskModalProps {
   task: ITask;
@@ -20,7 +20,7 @@ interface TaskModalProps {
 
 export default function TaskModal(props: TaskModalProps): JSX.Element {
   const {task, setTask, show, onHide} = props;
-  const {api} = useAPI();
+  const { getAccessTokenSilently } = useAuth0();
   const [isAuthorized, setAuthorized] = useState(false)
 
   const handleChange = ({target}: React.ChangeEvent<HTMLInputElement>): void => {
@@ -28,10 +28,10 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
   }
 
   const handleDeadlineChange = (deadline: Date, e: React.SyntheticEvent): void => {
-    setTask({...task, ["deadline"]: deadline});
+    setTask({...task, 'deadline': deadline});
   }
   const  handleChangeDescription = (value: string): void => {
-    setTask({...task, ["description"]: value})
+    setTask({...task, 'description': value});
   }
   const handleTakePhoto = (profilePicture: string) => {
     console.log('takePhoto');
@@ -39,10 +39,12 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
   }
 
 
-  const submitTask = (e: React.FormEvent): void => {
-    console.log(e)
+  const submitTask = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
-    api.post('/api/task', task);
+    const token = await getAccessTokenSilently();
+    api.post('/api/task', task, {
+      headers: { 'Authorization': `Bearer ${token}`},
+    });
     onHide();
   }
 

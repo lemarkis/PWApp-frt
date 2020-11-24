@@ -3,10 +3,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AxiosResponse } from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Row, Col, CardGroup, Button } from 'react-bootstrap';
-import { useAPI } from '../contexts/api.context';
 import { ITask } from '../models/task.model';
 import TaskCard from './components/TaskCard';
 import TaskModal from './components/TaskModal';
+import api from '../utils/api'
+import { useAuth0 } from '@auth0/auth0-react';
 
 const emptyTask: ITask = {
   category: 'task',
@@ -14,17 +15,20 @@ const emptyTask: ITask = {
 }
 
 export default function Dashboard(): JSX.Element {
+  const { getAccessTokenSilently } = useAuth0();
   const [taskList, setTaskList] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [currentTask, setCurrentTask] = useState(emptyTask);
-  const { api } = useAPI();
 
   useEffect(() => {
-    api.get('/api/task').then((res: AxiosResponse<any>) => {
-      console.log(Date.now(), ' getTasks :', res);
-      setTaskList(res.data);
-    }).catch(err => console.log(err.toJSON()));
-  }, [api]);
+    getAccessTokenSilently().then((token) => {
+      api.get('/api/task', {
+        headers: { 'Authorization': `Bearer ${token}`},
+      }).then((res: AxiosResponse<any>) => {
+        setTaskList(res.data);
+      }).catch(err => console.log(err.toJSON()));
+    });
+  }, [getAccessTokenSilently]);
 
   const onHide = (): void => {
     setShowModal(false);
