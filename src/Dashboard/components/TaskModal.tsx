@@ -6,6 +6,7 @@ import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import Camera, {IMAGE_TYPES} from "react-html5-camera-photo";
 import ReactQuill from 'react-quill'; // ES6
+import { Delta, Sources } from 'quill';
 import 'react-html5-camera-photo/build/css/index.css';
 import 'react-quill/dist/quill.snow.css'; // ES6
 import { useAuth0 } from '@auth0/auth0-react';
@@ -21,30 +22,27 @@ interface TaskModalProps {
 export default function TaskModal(props: TaskModalProps): JSX.Element {
   const {task, setTask, show, onHide} = props;
   const { getAccessTokenSilently } = useAuth0();
-  const [isAuthorized, setAuthorized] = useState(false)
-  const [description, setDescription] = useState("")
+  const [isAuthorized, setAuthorized] = useState(false);
 
   const handleChange = ({target}: React.ChangeEvent<HTMLInputElement>): void => {
-    setTask({...task, [target.name]: target.value});
+    setTask({ ...task, [target.name]: target.value });
   }
 
-  const handleChangeLocalisation = (e: any, key: string): void => {
-    setTask({...task, [key]: e.target.value})
+  const handleDescriptionChange = (value: string, _: Delta, __: Sources): void => {
+    setTask({ ...task, description: value })
   }
 
   const handleDeadlineChange = (deadline: Date, e: React.SyntheticEvent): void => {
-    setTask({...task, 'deadline': deadline});
+    setTask({ ...task, deadline });
   }
 
   const handleTakePhoto = (profilePicture: string) => {
     console.log('takePhoto');
-    setTask( {...task, profilePicture})
+    setTask({ ...task, profilePicture })
   }
-
 
   const submitTask = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
-    task["description"] = description
     const token = await getAccessTokenSilently();
     console.log(task)
     api.post('/api/task', task, {
@@ -151,7 +149,7 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
                     </InputGroup.Prepend>
                     <ReactQuill
                     theme="snow"
-                    value={description}
+                    value={task.description}
                     modules={{
                     toolbar: [
                       [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
@@ -170,7 +168,7 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
                     'bold', 'italic', 'underline', 'strike', 'blockquote',
                     'list', 'bullet', 'indent',
                     'link', 'image', 'video']}
-                    onChange={setDescription}
+                    onChange={handleDescriptionChange}
                     />
                   </InputGroup>
                   <br/>
@@ -205,7 +203,7 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
                           <Form.Control
                               name="location"
                               value={task.location}
-                              onChange={(e) => handleChangeLocalisation(e, "localisation")}
+                              onChange={handleChange}
                           />
                       </InputGroup>
                   </Form.Group>
