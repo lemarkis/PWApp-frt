@@ -10,6 +10,7 @@ interface Props {
 
 interface TodoComponent {
     id: number | undefined;
+    profilePicture?: string;
     category: string;
     title: string;
     description: string;

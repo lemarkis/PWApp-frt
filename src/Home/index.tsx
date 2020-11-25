@@ -12,6 +12,7 @@ interface Props {
 
 interface Todo {
   id: number | undefined;
+  profilePicture?: string
   category: string;
   title: string;
   description: string;
@@ -32,6 +33,7 @@ export default class Home extends React.Component<Props, State> {
     this.state = {
       emptyTodo: {
         id: undefined,
+        profilePicture: ``,
         category: ``,
         title: ``,
         description: ``,
@@ -42,6 +44,7 @@ export default class Home extends React.Component<Props, State> {
       todoList: [
         {
           id: 2,
+          profilePicture: ``,
           category: `meeting`,
           title: `It's a Meeting`,
           description: `Hello meeting`,
@@ -51,6 +54,7 @@ export default class Home extends React.Component<Props, State> {
         },
         {
           id: 1,
+          profilePicture: ``,
           category: `task`,
           title: `It's a Task`,
           description: `Hello Task`,

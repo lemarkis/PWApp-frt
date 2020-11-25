@@ -17,6 +17,7 @@ interface Props {
 
 interface TodoComponent {
   id?: number;
+  profilePicture?: string,
   category?: string;
   title?: string;
   description?: string;
@@ -28,6 +29,7 @@ interface TodoComponent {
 }
 
 interface State {
+  profilePicture?: string;
   category?: string;
   title?: string;
   description?: string;
@@ -46,6 +48,7 @@ export default class Forms extends React.Component<Props, State> {
   constructor(props: any) {
     super(props);
     this.state = {
+      profilePicture: this.props.todo.profilePicture,
       category: this.props.todo.category,
       title: this.props.todo.title,
       description: this.props.todo.description,
@@ -77,9 +80,9 @@ export default class Forms extends React.Component<Props, State> {
   }
 
   handleTakePhoto = (dataUri: string) => {
-    // Do stuff with the photo...
     console.log(dataUri);
     console.log('takePhoto');
+    this.setState({profilePicture: dataUri})
   }
 
   render() {
@@ -100,11 +103,14 @@ export default class Forms extends React.Component<Props, State> {
                     {this.state.isAuthorized
                       ? <></>
                       : <Form.Group as={Row}>
-                        <Form.File
+                        <Form.Control
                           type="file"
                           className="custom-file-label"
                           id="inputGroupFile01"
-                          label="Upload File"
+                          onChange={(e) => {
+                            console.log(e)
+                            // this.handleTakePhoto(e.target);
+                          }}
                           custom
                         />
                       </Form.Group>
@@ -178,9 +184,6 @@ export default class Forms extends React.Component<Props, State> {
                       'list', 'bullet', 'indent',
                       'link', 'image', 'video']}
                     onChange={(e) => this.handleChangeDescription(e)}/>
-                  {/*<FormControl defaultValue={this.props.todo.description}*/}
-                  {/*             onChange={(e) => this.handleChange(e, "description")} as="textarea"*/}
-                  {/*             aria-label="With textarea"/>*/}
                 </InputGroup>
                 <br/>
                 <br/>
