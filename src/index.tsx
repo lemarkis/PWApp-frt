@@ -1,15 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+// import reportWebVitals from './reportWebVitals';
 
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-
-import {Auth0Provider} from '@auth0/auth0-react';
+import { Auth0Provider } from '@auth0/auth0-react';
+import { APIProvider } from './contexts/api.context';
 import authConfig from './configs/auth.config.json';
 import history from "./utils/history";
 
+import App from './App';
 import './index.scss';
-
 
 const onRedirectCallback = (appState: any) => {
   console.log('appState: ', appState)
@@ -30,7 +29,9 @@ ReactDOM.render(
       redirectUri={window.location.origin}
       onRedirectCallback={onRedirectCallback}
     >
-      <App/>
+      <APIProvider apiUrl={process.env.REACT_APP_API_URL} >
+        <App />
+      </APIProvider>
     </Auth0Provider>
   </React.StrictMode>,
   document.getElementById('root')
@@ -39,4 +40,4 @@ ReactDOM.render(
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+// reportWebVitals();
