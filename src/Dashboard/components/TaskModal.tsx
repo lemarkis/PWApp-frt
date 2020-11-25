@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Button, Col, Container, Form, FormGroup, InputGroup, Modal, Row} from 'react-bootstrap';
+import {Button, Col, Container, Form, InputGroup, Modal, Row} from 'react-bootstrap';
 import {ITask} from '../../models/task.model';
 import DatePicker from 'react-datepicker';
 
@@ -22,17 +22,20 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
   const {task, setTask, show, onHide} = props;
   const { getAccessTokenSilently } = useAuth0();
   const [isAuthorized, setAuthorized] = useState(false)
+  const [description, setDescription] = useState("")
 
   const handleChange = ({target}: React.ChangeEvent<HTMLInputElement>): void => {
     setTask({...task, [target.name]: target.value});
   }
 
+  const handleChangeLocalisation = (e: any, key: string): void => {
+    setTask({...task, [key]: e.target.value})
+  }
+
   const handleDeadlineChange = (deadline: Date, e: React.SyntheticEvent): void => {
     setTask({...task, 'deadline': deadline});
   }
-  const  handleChangeDescription = (value: string): void => {
-    setTask({...task, 'description': value});
-  }
+
   const handleTakePhoto = (profilePicture: string) => {
     console.log('takePhoto');
     setTask( {...task, profilePicture})
@@ -41,7 +44,9 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
 
   const submitTask = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
+    task["description"] = description
     const token = await getAccessTokenSilently();
+    console.log(task)
     api.post('/api/task', task, {
       headers: { 'Authorization': `Bearer ${token}`},
     });
@@ -128,7 +133,7 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
                 <Form.Group as={Col}>
                   <InputGroup>
                     <InputGroup.Prepend>
-                      <InputGroup.Text id="title">Titre</InputGroup.Text>
+                      <InputGroup.Text id="inputGroup-sizing-default">Titre</InputGroup.Text>
                     </InputGroup.Prepend>
                     <Form.Control
                       name="title"
@@ -146,7 +151,7 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
                     </InputGroup.Prepend>
                     <ReactQuill
                     theme="snow"
-                    value={task.description}
+                    value={description}
                     modules={{
                     toolbar: [
                       [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
@@ -165,7 +170,7 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
                     'bold', 'italic', 'underline', 'strike', 'blockquote',
                     'list', 'bullet', 'indent',
                     'link', 'image', 'video']}
-                    onChange={handleChangeDescription}
+                    onChange={setDescription}
                     />
                   </InputGroup>
                   <br/>
@@ -182,7 +187,6 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
                     <DatePicker
                       selected={task.deadline}
                       onChange={handleDeadlineChange}
-                      locale="fr-FR"
                       timeIntervals={15}
                       showTimeSelect
                       dateFormat="dd MMM yyyy HH:mm"
@@ -201,7 +205,7 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
                           <Form.Control
                               name="location"
                               value={task.location}
-                              onChange={handleChange}
+                              onChange={(e) => handleChangeLocalisation(e, "localisation")}
                           />
                       </InputGroup>
                   </Form.Group>
