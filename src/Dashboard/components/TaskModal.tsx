@@ -74,7 +74,6 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
         <Modal.Body>
           <Row>
             <Col className="align-self-center mr-auto">
-              <Form>
                 <Row>
                   <Col md={{span: 5, offset: 2}} className="mr-auto text-center">
                     {isAuthorized
@@ -106,7 +105,6 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
                       : <Button onClick={() => setAuthorized(true)}> Take picture</Button>}
                   </Col>
                 </Row>
-              </Form>
             </Col>
             <Col>
               <Form.Row>
