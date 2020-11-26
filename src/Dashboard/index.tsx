@@ -2,7 +2,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AxiosResponse } from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Row, Col, CardGroup, Button } from 'react-bootstrap';
+import { Row, Col, CardColumns, Button } from 'react-bootstrap';
 import { ITask } from '../models/task.model';
 import TaskCard from './components/TaskCard';
 import TaskModal from './components/TaskModal';
@@ -42,9 +42,9 @@ export default function Dashboard(): JSX.Element {
           <h1>What's Next ?</h1>
         </Col>
       </Row>
-      <CardGroup>
+      <CardColumns>
         {taskList.map((task: ITask) => <TaskCard key={task.id} task={task} />)}
-      </CardGroup>
+      </CardColumns>
       <Button variant="success" onClick={() => setShowModal(true)}><FontAwesomeIcon icon={faPlus} /></Button>
       <TaskModal show={showModal} onHide={onHide} task={currentTask} setTask={setCurrentTask} />
     </>
