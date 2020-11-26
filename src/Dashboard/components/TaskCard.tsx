@@ -1,8 +1,10 @@
+import { useAuth0 } from '@auth0/auth0-react';
 import { faClipboardList, faEdit, faTrash, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import { Button, Card, Col, Row } from 'react-bootstrap';
 import { ITask } from '../../models/task.model';
+import api from '../../utils/api';
 
 interface TaskCardProps {
   task: ITask;
@@ -11,6 +13,16 @@ interface TaskCardProps {
 
 export default function TaskCard(props: TaskCardProps): JSX.Element {
   const { task } = props;
+  const { getAccessTokenSilently } = useAuth0();
+
+  const deleteTask = async (): Promise<void> => {
+    console.log(task.id);
+    const token = await getAccessTokenSilently();
+    api.delete('/api/task', {
+      headers: { 'Authorization': `Bearer ${token}`},
+      data: { id: task.id },
+    });
+  }
 
   return (
     <Card>
@@ -23,20 +35,27 @@ export default function TaskCard(props: TaskCardProps): JSX.Element {
             <Col xs="auto">
               {task.title}
             </Col>
-            <Col xs="auto">
-              <Button size="sm" variant="outline-info" title="Editer">
-                <FontAwesomeIcon icon={faEdit} />
-              </Button>
-              <Button size="sm" variant="outline-danger" title="Supprimer">
-                <FontAwesomeIcon icon={faTrash} />
-              </Button>
+            <Col>
             </Col>
           </Row>
         </Card.Title>
-        <Card.Text>
-          {task.description}
+        <Card.Text dangerouslySetInnerHTML={{ __html: task.description ?? "" }}>
         </Card.Text>
       </Card.Body>
+      <Card.Footer>
+        <Row className="justify-content-end">
+          <Col xs="auto">
+            <Button size="sm" variant="outline-info" title="Editer">
+              <FontAwesomeIcon icon={faEdit} />
+            </Button>
+          </Col>
+          <Col xs="auto">
+            <Button size="sm" variant="outline-danger" title="Supprimer" onClick={deleteTask}>
+              <FontAwesomeIcon icon={faTrash} />
+            </Button>
+          </Col>
+        </Row>
+      </Card.Footer>
     </Card>
   );
 }
