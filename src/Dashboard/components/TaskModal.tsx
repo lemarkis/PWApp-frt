@@ -36,9 +36,9 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
     setTask({ ...task, deadline });
   }
 
-  const handleTakePhoto = (profilePicture: string) => {
+  const handleTakePhoto = (globalPicture: string) => {
     console.log('takePhoto');
-    setTask({ ...task, profilePicture })
+    setTask({ ...task, globalPicture })
   }
 
   const submitTask = async (e: React.FormEvent): Promise<void> => {

@@ -5,7 +5,7 @@ interface IReminders {
 
 export interface ITask {
   id?: number;
-  profilePicture?: string;
+  globalPicture?: string;
   category: string;
   title: string;
   description?: string;
