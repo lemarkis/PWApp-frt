@@ -170,7 +170,7 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
                       <InputGroup.Text id="deadline">Date d'échéance</InputGroup.Text>
                     </InputGroup.Prepend>
                     <DatePicker
-                      selected={task.deadline}
+                      selected={task.deadline ? moment(task.deadline).toDate() : moment().toDate()}
                       onChange={handleDeadlineChange}
                       timeIntervals={15}
                       showTimeSelect
