@@ -10,7 +10,7 @@ import 'react-html5-camera-photo/build/css/index.css';
 import 'react-quill/dist/quill.snow.css'; // ES6
 import { useAuth0 } from '@auth0/auth0-react';
 import api from '../../utils/api';
-import moment from 'moment'
+import moment from 'moment';
 
 interface TaskModalProps {
   task: ITask;
