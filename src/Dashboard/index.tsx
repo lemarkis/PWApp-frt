@@ -21,6 +21,11 @@ export default function Dashboard(): JSX.Element {
   const [currentTask, setCurrentTask] = useState(emptyTask);
 
   useEffect(() => {
+    console.log("IT'S ON USE EFFECT")
+    getUserList()
+  }, [getAccessTokenSilently]);
+
+  const getUserList = (): void => {
     getAccessTokenSilently().then((token) => {
       api.get('/api/task', {
         headers: { 'Authorization': `Bearer ${token}`},
@@ -28,10 +33,12 @@ export default function Dashboard(): JSX.Element {
         setTaskList(res.data);
       }).catch(err => console.log(err.toJSON()));
     });
-  }, [getAccessTokenSilently]);
+  }
 
   const onHide = (): void => {
+    console.log("IT'S ON HIDE EFFECT")
     setShowModal(false);
+    getUserList()
     setCurrentTask(emptyTask);
   }
 
@@ -43,7 +50,7 @@ export default function Dashboard(): JSX.Element {
         </Col>
       </Row>
       <CardColumns>
-        {taskList.map((task: ITask) => <TaskCard key={task.id} task={task} />)}
+        {taskList.map((task: ITask) => <TaskCard key={task.id} task={task} getUserList={getUserList} showModal={setShowModal} setCurrentTask={setCurrentTask} />)}
       </CardColumns>
       <Button variant="success" onClick={() => setShowModal(true)}><FontAwesomeIcon icon={faPlus} /></Button>
       <TaskModal show={showModal} onHide={onHide} task={currentTask} setTask={setCurrentTask} />

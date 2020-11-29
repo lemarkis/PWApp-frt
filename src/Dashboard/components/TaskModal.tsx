@@ -10,6 +10,7 @@ import 'react-html5-camera-photo/build/css/index.css';
 import 'react-quill/dist/quill.snow.css'; // ES6
 import { useAuth0 } from '@auth0/auth0-react';
 import api from '../../utils/api';
+import moment from 'moment'
 
 interface TaskModalProps {
   task: ITask;
@@ -47,15 +48,6 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
     });
     onHide();
   }
-
-  const DateInput = ({value, onClick}: any): JSX.Element => (
-    <Form.Control
-      name="deadline"
-      value={value}
-      onClick={onClick}
-      readOnly
-    />
-  )
 
   return (
     <Modal
@@ -149,10 +141,10 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
                     toolbar: [
                       [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
                       [{size: []}],
-                      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+                      ['bold', 'italic', 'underline', 'blockquote'],
                       [{'list': 'ordered'}, {'list': 'bullet'},
                         {'indent': '-1'}, {'indent': '+1'}],
-                      ['link', 'image', 'video'],
+                      ['link'],
                       ['clean']
                     ],
                     clipboard: {
@@ -160,9 +152,9 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
                       matchVisual: false,
                     }}}
                     formats= {['header', 'font', 'size',
-                    'bold', 'italic', 'underline', 'strike', 'blockquote',
+                    'bold', 'italic', 'underline', 'blockquote',
                     'list', 'bullet', 'indent',
-                    'link', 'image', 'video']}
+                    'link']}
                     onChange={setDescription}
                     />
                   </InputGroup>
