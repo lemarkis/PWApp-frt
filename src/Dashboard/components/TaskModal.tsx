@@ -6,7 +6,6 @@ import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import Camera, {IMAGE_TYPES} from "react-html5-camera-photo";
 import ReactQuill from 'react-quill'; // ES6
-import { Delta, Sources } from 'quill';
 import 'react-html5-camera-photo/build/css/index.css';
 import 'react-quill/dist/quill.snow.css'; // ES6
 import { useAuth0 } from '@auth0/auth0-react';
@@ -23,13 +22,10 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
   const {task, setTask, show, onHide} = props;
   const { getAccessTokenSilently } = useAuth0();
   const [isAuthorized, setAuthorized] = useState(false);
+  const [description, setDescription] = useState('');
 
   const handleChange = ({target}: React.ChangeEvent<HTMLInputElement>): void => {
     setTask({ ...task, [target.name]: target.value });
-  }
-
-  const handleDescriptionChange = (value: string, _: Delta, __: Sources): void => {
-    setTask({ ...task, description: value })
   }
 
   const handleDeadlineChange = (deadline: Date, e: React.SyntheticEvent): void => {
@@ -43,6 +39,7 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
 
   const submitTask = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
+    task.description = description;
     const token = await getAccessTokenSilently();
     console.log(task)
     api.post('/api/task', task, {
@@ -147,7 +144,7 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
                     </InputGroup.Prepend>
                     <ReactQuill
                     theme="snow"
-                    value={task.description}
+                    value={description}
                     modules={{
                     toolbar: [
                       [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
@@ -166,7 +163,7 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
                     'bold', 'italic', 'underline', 'strike', 'blockquote',
                     'list', 'bullet', 'indent',
                     'link', 'image', 'video']}
-                    onChange={handleDescriptionChange}
+                    onChange={setDescription}
                     />
                   </InputGroup>
                   <br/>
