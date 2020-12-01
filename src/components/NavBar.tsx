@@ -59,7 +59,6 @@ const NavBar = () => {
       <Navbar.Toggle aria-controls="navbar-nav" />
       <Navbar.Collapse id="navbar-nav">
         <Nav className="mr-auto">
-          <Nav.Link href="/test">Test</Nav.Link>
         </Nav>
         { isAuthenticated ? <NavConnected /> : <NavDisconnected /> }
       </Navbar.Collapse>

@@ -1,21 +1,24 @@
 import {useAuth0} from '@auth0/auth0-react';
-import {faClipboardList, faEdit, faTrash, faUsers} from '@fortawesome/free-solid-svg-icons';
+import {faClipboardList, faEdit, faTrash, faUsers, faEye} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import React from 'react';
 import {Button, Card, Col, Row} from 'react-bootstrap';
 import {ITask} from '../../models/task.model';
 import api from '../../utils/api';
+import addNotification from "react-push-notification";
+import TaskCardView from "./TaskCardView";
 
 interface TaskCardProps {
   task: ITask;
   getUserList: () => void;
   showModal: (value: boolean) => void;
+  showView: (value: boolean) => void;
   setCurrentTask: (task: ITask) => void;
   [key: string]: any;
 }
 
 export default function TaskCard(props: TaskCardProps): JSX.Element {
-  const {task, getUserList, showModal, setCurrentTask} = props;
+  const {task, getUserList, showModal, showView, setCurrentTask} = props;
   const {getAccessTokenSilently} = useAuth0();
 
   const deleteTask = async (): Promise<void> => {
@@ -25,6 +28,12 @@ export default function TaskCard(props: TaskCardProps): JSX.Element {
     api.delete('/api/task', {
       headers: {'Authorization': `Bearer ${token}`},
       data: {id: task.id},
+    }).then(() => {
+      addNotification( {
+        title: 'Information',
+        subtitle: 'Votre tâche a bien était supprimer.',
+        theme: 'light',
+      })
     });
     getUserList();
   }
@@ -32,6 +41,11 @@ export default function TaskCard(props: TaskCardProps): JSX.Element {
   const updateCard = (): void => {
     setCurrentTask(task)
     showModal(true)
+  }
+
+  const showCard = (): void => {
+    setCurrentTask(task)
+    showView(true)
   }
 
   return (
@@ -56,6 +70,11 @@ export default function TaskCard(props: TaskCardProps): JSX.Element {
       </Card.Body>
       <Card.Footer>
         <Row className="justify-content-end">
+          <Col xs="auto">
+            <Button size="sm" variant="outline-warning" title="Regarder" onClick={() => showCard()}>
+              <FontAwesomeIcon icon={faEye}/>
+            </Button>
+          </Col>
           <Col xs="auto">
             <Button size="sm" variant="outline-info" title="Editer" onClick={() => updateCard()}>
               <FontAwesomeIcon icon={faEdit}/>
