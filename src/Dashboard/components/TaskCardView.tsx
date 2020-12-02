@@ -43,7 +43,7 @@ export default function TaskCardView(props: TaskCardViewProps): JSX.Element {
                   <InputGroup.Prepend>
                     <h2><Badge variant="secondary">Category</Badge></h2>
                   </InputGroup.Prepend>
-                  <h4>{task.category == "meeting" ? <p> Réunion</p> : <p> Tâche à faire</p>}</h4>
+                  <h4>{task.category === "meeting" ? <p> Réunion</p> : <p> Tâche à faire</p>}</h4>
                 </InputGroup>
               </Form.Group>
             </Form.Row>
@@ -53,7 +53,7 @@ export default function TaskCardView(props: TaskCardViewProps): JSX.Element {
                   <InputGroup.Prepend>
                     <h2><Badge variant="secondary">Description</Badge></h2>
                   </InputGroup.Prepend>
-                  {task.description ? <p>{task.description}</p> :
+                  {task.description ? <p dangerouslySetInnerHTML={{ __html: task.description }} /> :
                     <p> Vous n'avez pas donner de description a cette tâche.</p>}
                 </InputGroup>
               </Form.Group>
