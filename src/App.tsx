@@ -23,12 +23,11 @@ export default function App(): JSX.Element {
 
   return (
     <Router history={history}>
+      <Notifications position='top-right' />
       <NavBar/>
-      <Notifications />
       <Container className="mt-6r">
         <Switch>
           <Route exact path="/" component={isAuthenticated ? Dashboard : Home} />
-          {/*<Route exact path="/test" component={Test} />*/}
         </Switch>
       </Container>
     </Router>

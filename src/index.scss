@@ -6,9 +6,9 @@ $spacers: (
 15r: 15rem
 );
 
-@import "../node_modules/bootswatch/dist/darkly/variables";
+@import "../node_modules/bootswatch/dist/cerulean/variables";
 @import "../node_modules/bootstrap/scss/bootstrap";
-@import "../node_modules/bootswatch/dist/darkly/bootswatch";
+@import "../node_modules/bootswatch/dist/cerulean/bootswatch";
 
 .input-group>.input-group-prepend {
   flex: 0 0 22%;
@@ -28,4 +28,21 @@ $spacers: (
 
 #cam {
   background: #61dafb;
+}
+
+profilePicture {
+  width: 10px;
+  height: 10px;
+}
+
+.app {
+  background: linear-gradient(#562d81, #158ace) !important;
+}
+
+#app {
+  background: linear-gradient(#562d81, #158ace) !important;
+}
+
+.border-3 {
+  border-width:3px !important;
 }

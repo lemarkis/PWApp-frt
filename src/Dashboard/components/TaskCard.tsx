@@ -49,7 +49,8 @@ export default function TaskCard(props: TaskCardProps): JSX.Element {
   }
 
   return (
-    <Card>
+    <Card     style={{ border: '3px solid #54b4eb', borderColor: '#54b4eb' }}
+              border="info">
       <Card.Body>
         <Card.Title>
           <Row className="justify-content-between">
@@ -76,7 +77,7 @@ export default function TaskCard(props: TaskCardProps): JSX.Element {
             </Button>
           </Col>
           <Col xs="auto">
-            <Button size="sm" variant="outline-info" title="Editer" onClick={() => updateCard()}>
+            <Button size="sm" variant="outline-success" title="Editer" onClick={() => updateCard()}>
               <FontAwesomeIcon icon={faEdit}/>
             </Button>
           </Col>

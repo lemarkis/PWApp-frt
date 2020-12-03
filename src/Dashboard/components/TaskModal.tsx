@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Button, Col, Container, Form, InputGroup, Modal, Row} from 'react-bootstrap';
+import {Card, Accordion, Button, Col, Container, Form, InputGroup, Modal, Row} from 'react-bootstrap';
 import {ITask} from '../../models/task.model';
 import DatePicker from 'react-datepicker';
 
@@ -11,8 +11,13 @@ import 'react-quill/dist/quill.snow.css'; // ES6
 import {useAuth0} from '@auth0/auth0-react';
 import api from '../../utils/api';
 import moment from 'moment';
+import {IReminders} from '../../models/task.model';
 
 import addNotification from "react-push-notification";
+import './../../index.scss'
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faTrash, faPlusCircle} from "@fortawesome/free-solid-svg-icons";
+
 
 interface TaskModalProps {
   task: ITask;
@@ -26,6 +31,9 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
   const {getAccessTokenSilently} = useAuth0();
   const [isAuthorized, setAuthorized] = useState(false);
   const [description, setDescription] = useState('');
+  const [showDate, setShowDate] = useState(false);
+  const [remindertDate, setRemindertDate] = useState<Date | null>(new Date());
+  const [reminderNumber, setReminderNumber] = useState(0)
 
   const handleChange = ({target}: React.ChangeEvent<HTMLInputElement>): void => {
     setTask({...task, [target.name]: target.value});
@@ -37,8 +45,10 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
 
   const handleTakePhoto = (globalPicture: string) => {
     console.log('takePhoto');
+    console.log(globalPicture)
     setTask({...task, globalPicture})
   }
+
 
   const submitTask = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
@@ -58,6 +68,7 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
         onHide();
       }
     ).catch((e) => {
+      console.log("ERROR")
       addNotification({
         title: 'Attention',
         subtitle: 'Erreur - submitTask - Votre tache n\'a pas pus etre créer ou modifier.',
@@ -66,6 +77,28 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
       })
       console.log("Error: " + e)
     });
+  }
+
+  const addReminder = () => {
+    console.log(task)
+    if (task.reminders) {
+      const reminder: IReminders = {
+        id: task.reminders.length + 1,
+        date: remindertDate
+      }
+      task.reminders.push(reminder);
+      setReminderNumber(task.reminders.length + 1)
+    } else if (task) {
+      const init = {
+        id: 1,
+        date: remindertDate
+      }
+      task['reminders'] = [init];
+      setReminderNumber(1)
+    }
+    setRemindertDate(null)
+    setShowDate(false)
+    console.log(task)
   }
 
   return (
@@ -81,147 +114,194 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
       <Form onSubmit={submitTask}>
         <Modal.Body>
           <Row>
-            <Col className="align-self-center mr-auto">
-              <Row>
-                <Col md={{span: 5, offset: 1}} className="mr-auto text-center">
-                  {isAuthorized
-                    ? <></>
-                    : <Form.Group as={Row}>
-                      <Form.File
-                        type="file"
-                        className="custom-file-label"
-                        id="inputGroupFile01"
-                        label="Upload"
-                        custom
-                      />
-                    </Form.Group>
-                  }
-                </Col> {isAuthorized
-                ? <></>
-                : <Col xs={1}> Or </Col>
+            <Col></Col>
+            <Col xs={8}>
+              {isAuthorized
+                ?
+                <Container fluid={"sm"}>
+                  <Camera imageType={IMAGE_TYPES.JPG}
+                          imageCompression={1}
+                          onTakePhoto={(e) => {
+                            handleTakePhoto(e);
+                          }}/>
+                          <Row>
+                            <Col></Col>
+                            <Col xs={1}>
+                              <Button id={'returnCam'}  onClick={() => setAuthorized(false)}>Return</Button>
+                            </Col>
+                            <Col></Col>
+                          </Row>
+                </Container>
+                : <></>
               }
-                { isAuthorized
-                  ?
-                  <Col className="text-center">
-                    <Container fluid={true}>
-                      <Camera imageType={IMAGE_TYPES.JPG}
-                              imageCompression={1}
-                              onTakePhoto={(e) => {
-                                handleTakePhoto(e);
-                              }}/>
-                      <Button variant="light" onClick={() => setAuthorized(false)}>Return</Button>
-                    </Container>
-                  </Col>
-                  :
-                  <Col md={{span: 3, offset: 1}} className="text-center">
-                    <Button onClick={() => setAuthorized(true)}> Take picture</Button>
-                  </Col>
-                }
-              </Row>
-            </Col>
-            <Col>
-              <Form.Row>
-                <Form.Group as={Col}>
-                  <InputGroup>
-                    <InputGroup.Prepend>
-                      <InputGroup.Text id="category">Catégorie</InputGroup.Text>
-                    </InputGroup.Prepend>
-                    <Form.Control
-                      name="category"
-                      as="select"
-                      onChange={handleChange}
-                      value={task.category}
-                    >
-                      <option value="task">Tâche</option>
-                      <option value="meeting">Réunion</option>
-                    </Form.Control>
-                  </InputGroup>
-                </Form.Group>
-              </Form.Row>
-              <Form.Row>
-                <Form.Group as={Col}>
-                  <InputGroup>
-                    <InputGroup.Prepend>
-                      <InputGroup.Text id="inputGroup-sizing-default">Titre</InputGroup.Text>
-                    </InputGroup.Prepend>
-                    <Form.Control
-                      name="title"
-                      value={task.title}
-                      onChange={handleChange}
-                    />
-                  </InputGroup>
-                </Form.Group>
-              </Form.Row>
-              <Form.Row>
-                <Form.Group as={Col}>
-                  <InputGroup>
-                    <InputGroup.Prepend>
-                      <InputGroup.Text id="description">Description</InputGroup.Text>
-                    </InputGroup.Prepend>
-                    <ReactQuill
-                      theme="snow"
-                      value={description}
-                      modules={{
-                        toolbar: [
-                          [{'header': '1'}, {'header': '2'}, {'font': []}],
-                          [{size: []}],
-                          ['bold', 'italic', 'underline', 'blockquote'],
-                          [{'list': 'ordered'}, {'list': 'bullet'},
-                            {'indent': '-1'}, {'indent': '+1'}],
-                          ['link'],
-                          ['clean']
-                        ],
-                        clipboard: {
-                          // toggle to add extra line breaks when pasting HTML:
-                          matchVisual: false,
-                        }
-                      }}
-                      formats={['header', 'font', 'size',
-                        'bold', 'italic', 'underline', 'blockquote',
-                        'list', 'bullet', 'indent',
-                        'link']}
-                      onChange={setDescription}
-                    />
-                  </InputGroup>
-                  <br/>
-                  <br/>
-                  <br/>
-                </Form.Group>
-              </Form.Row>
-              <Form.Row>
-                <Form.Group as={Col}>
-                  <InputGroup>
-                    <InputGroup.Prepend>
-                      <InputGroup.Text id="deadline">Date d'échéance</InputGroup.Text>
-                    </InputGroup.Prepend>
-                    <DatePicker
-                      selected={task.deadline ? moment(task.deadline).toDate() : moment().toDate()}
-                      onChange={handleDeadlineChange}
-                      timeIntervals={15}
-                      showTimeSelect
-                      dateFormat="dd MMM yyyy HH:mm"
-                      // customInput={<DateInput />}
-                    />
-                  </InputGroup>
-                </Form.Group>
-              </Form.Row>
-              {task.category === "meeting" &&
-              <Form.Row>
-                  <Form.Group as={Col}>
+              {!isAuthorized
+                ? <Container>
+                  <Form.Row className="justify-content-between">
+                    <Form.Group as={Col}>
                       <InputGroup>
-                          <InputGroup.Prepend>
-                              <InputGroup.Text id="location">Localisation</InputGroup.Text>
-                          </InputGroup.Prepend>
-                          <Form.Control
-                              name="location"
-                              value={task.location}
-                              onChange={handleChange}
-                          />
+                        <InputGroup.Prepend>
+                          <InputGroup.Text id="profilePicture">Image de profile</InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <Col xs={5}>
+                          <Form.File
+                            onChange={(e: any) => handleTakePhoto(e.target.files[0])}/>
+                        </Col>
+                        <Col xs={1}>
+                          <p>Or</p>
+                        </Col>
+                        <Col xs="auto">
+                          <Button onClick={() => setAuthorized(true)}> Take picture</Button>
+                        </Col>
                       </InputGroup>
-                  </Form.Group>
-              </Form.Row>
+                    </Form.Group>
+                  </Form.Row>
+                  <Form.Row>
+                    <Form.Group as={Col}>
+                      <InputGroup>
+                        <InputGroup.Prepend>
+                          <InputGroup.Text id="category">Catégorie</InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <Form.Control
+                          name="category"
+                          as="select"
+                          onChange={handleChange}
+                          value={task.category}
+                        >
+                          <option value="task">Tâche</option>
+                          <option value="meeting">Réunion</option>
+                        </Form.Control>
+                      </InputGroup>
+                    </Form.Group>
+                  </Form.Row>
+                  <Form.Row>
+                    <Form.Group as={Col}>
+                      <InputGroup style={{width: '20px', height: '20px'}}>
+                        <InputGroup.Prepend>
+                          <InputGroup.Text id="inputGroup-sizing-default">Titre</InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <Form.Control
+                          name="title"
+                          value={task.title}
+                          onChange={handleChange}
+                        />
+                      </InputGroup>
+                    </Form.Group>
+                  </Form.Row>
+                  <Form.Row>
+                    <Form.Group as={Col}>
+                      <InputGroup>
+                        <InputGroup.Prepend>
+                          <InputGroup.Text id="description">Description</InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <ReactQuill
+                          theme="snow"
+                          value={description}
+                          modules={{
+                            toolbar: [
+                              [{'header': '1'}, {'header': '2'}, {'font': []}],
+                              [{size: []}],
+                              ['bold', 'italic', 'underline', 'blockquote'],
+                              [{'list': 'ordered'}, {'list': 'bullet'},
+                                {'indent': '-1'}, {'indent': '+1'}],
+                              ['link']
+                            ],
+                            clipboard: {
+                              // toggle to add extra line breaks when pasting HTML:
+                              matchVisual: false,
+                            }
+                          }}
+                          formats={['header', 'font', 'size',
+                            'bold', 'italic', 'underline', 'blockquote',
+                            'list', 'bullet', 'indent',
+                            'link']}
+                          onChange={setDescription}
+                        />
+                      </InputGroup>
+                      <br/>
+                      <br/>
+                      <br/>
+                    </Form.Group>
+                  </Form.Row>
+                  <Form.Row>
+                    <Form.Group as={Col}>
+                      <InputGroup>
+                        <InputGroup.Prepend>
+                          <InputGroup.Text id="deadline">Date d'échéance</InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <DatePicker
+                          selected={task.deadline ? moment(task.deadline).toDate() : moment().toDate()}
+                          onChange={handleDeadlineChange}
+                          timeIntervals={15}
+                          showTimeSelect
+                          dateFormat="dd MMM yyyy HH:mm"
+                          // customInput={<DateInput />}
+                        />
+                      </InputGroup>
+                    </Form.Group>
+                  </Form.Row>
+                  {task.category === "meeting" &&
+                  <Form.Row>
+                      <Form.Group as={Col}>
+                          <InputGroup>
+                              <InputGroup.Prepend>
+                                  <InputGroup.Text id="location">Localisation</InputGroup.Text>
+                              </InputGroup.Prepend>
+                              <Form.Control
+                                  name="location"
+                                  value={task.location}
+                                  onChange={handleChange}
+                              />
+                          </InputGroup>
+                      </Form.Group>
+                  </Form.Row>
+                  }
+                  <Form.Row>
+                    <Form.Group as={Col}>
+                      <Accordion>
+                        <Card>
+                          <Accordion.Toggle as={Button} variant="link" eventKey="0">
+                            Ajouter / Supprimer un rappel
+                          </Accordion.Toggle>
+                          <Accordion.Collapse eventKey="0">
+                            <Card.Body>
+                              {task.reminders.map((reminder: IReminders) => {
+                                <p>Hello world</p>
+                                  moment(reminder.date).toDate()
+                              })}
+                              {showDate
+                                ? <Row>
+                                  <DatePicker
+                                    selected={remindertDate}
+                                    onChange={(date: Date) => setRemindertDate(date)}
+                                    timeIntervals={15}
+                                    showTimeSelect
+                                    withPortal
+                                    dateFormat="dd MMM yyyy HH:mm"
+                                  />
+                                  <Button size="sm" variant="outline-success" title="Ajouter" onClick={addReminder}>
+                                    <FontAwesomeIcon icon={faPlusCircle}/>
+                                  </Button>
+                                </Row>
+                                : <></>
+                              }
+                              { ( reminderNumber <= 5 && showDate === false ) ?
+                                <Button size="sm" variant="outline-success" title="Ajouter"
+                                        onClick={() => setShowDate(true)}>
+                                  <FontAwesomeIcon icon={faPlusCircle}/>
+                                </Button>
+                                : <></>
+                              }
+                            </Card.Body>
+                          </Accordion.Collapse>
+                        </Card>
+                      </Accordion>
+                    </Form.Group>
+                  </Form.Row>
+                </Container>
+                : <></>
               }
             </Col>
+            <Col></Col>
           </Row>
         </Modal.Body>
         <Modal.Footer>

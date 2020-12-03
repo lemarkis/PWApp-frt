@@ -1,6 +1,6 @@
-interface IReminders {
-  name: string;
-  date: Date;
+export interface IReminders {
+  id?: number;
+  date: Date | null;
 }
 
 export interface ITask {
@@ -11,7 +11,7 @@ export interface ITask {
   description?: string;
   deadline?: Date;
   location?: string;
-  reminders?: [IReminders];
+  reminders: [IReminders];
   status?: string;
   [key: string]: any;
 }

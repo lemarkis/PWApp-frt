@@ -25,8 +25,9 @@ export default function TaskCardView(props: TaskCardViewProps): JSX.Element {
       centered
     >
       <Modal.Header closeButton>
-        <Modal.Title id="taskModal"><FontAwesomeIcon
-          icon={task.category === "task" ? faClipboardList : faUsers}/> {task.title} </Modal.Title>
+        <Modal.Title id="taskModal">
+          <FontAwesomeIcon icon={task.category === "task" ? faClipboardList : faUsers}/>
+          {"   "  + task.title} </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Row>
