@@ -1,0 +1,22 @@
+
+#cam {
+    background: #61dafb;
+}
+
+.app {
+    background: linear-gradient(#562d81, #158ace) !important;
+}
+
+#app {
+    background: linear-gradient(#562d81, #158ace) !important;
+}
+
+.react-datepicker__input-container input {
+    height: 40px;
+    border: 1px solid #ced4da;
+}
+
+.quill {
+    height: 90px;
+    width: 110%;
+}
