@@ -1,6 +1,6 @@
 export interface IReminders {
   id?: string;
-  date: Date | null;
+  date?: Date;
 }
 
 export interface ITask {

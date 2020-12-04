@@ -18,6 +18,7 @@ import addNotification from "react-push-notification";
 import './../../components/Form.css'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faSave, faMinusCircle, faPlusCircle} from "@fortawesome/free-solid-svg-icons";
+import { swPush } from '../../swPush';
 
 moment.locale("fr");         // fr
 
@@ -34,7 +35,7 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
   const [isAuthorized, setAuthorized] = useState(false);
   const [description, setDescription] = useState('');
   const [showDate, setShowDate] = useState(false);
-  const [reminderDate, setReminderDate] = useState<Date | null>(new Date());
+  const [reminderDate, setReminderDate] = useState<Date | undefined>(new Date());
 
   const handleChange = ({target}: React.ChangeEvent<HTMLInputElement>): void => {
     setTask({...task, [target.name]: target.value});
@@ -66,7 +67,7 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
         setDescription('');
         setTask({...task, 'title': ''});
         setTask({...task, 'deadline': undefined})
-        setReminderDate(null)
+        setReminderDate(undefined);
         onHide();
       }
     ).catch((e) => {
@@ -88,7 +89,11 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
     });
   }
 
-  const addReminder = () => {
+  const addReminder = async () => {
+    const perm = await swPush.askNotificationPermission();
+    if (perm !== 'granted') {
+      // TODO besoin des permissions notif
+    }
     console.log(Date.parse(moment(task.deadline).toDate().toString()))
     console.log(Date.parse(moment(reminderDate).toDate().toString()))
     if (Date.parse(moment(task.deadline).toDate().toString()) < Date.parse(moment(reminderDate).toDate().toString())) {
@@ -107,7 +112,7 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
       }
       task.reminders.push(reminder);
       setShowDate(false);
-      setReminderDate(null)
+      setReminderDate(undefined);
     }
   }
 
