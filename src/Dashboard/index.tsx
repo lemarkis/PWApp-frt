@@ -39,7 +39,13 @@ export default function Dashboard(): JSX.Element {
   }
 
   useEffect(() => {
-    getUserList()
+    getAccessTokenSilently().then((token) => {
+      api.get('/api/task', {
+        headers: { 'Authorization': `Bearer ${token}`},
+      }).then((res: AxiosResponse<any>) => {
+        setTaskList(res.data);
+      }).catch(err => console.log(err.toJSON()));
+    });
   }, [getAccessTokenSilently]);
 
   const checkDate = (): void => {

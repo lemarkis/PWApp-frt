@@ -6,7 +6,6 @@ import {Button, Card, Col, Row} from 'react-bootstrap';
 import {ITask} from '../../models/task.model';
 import api from '../../utils/api';
 import addNotification from "react-push-notification";
-import TaskCardView from "./TaskCardView";
 
 interface TaskCardProps {
   task: ITask;
@@ -55,7 +54,7 @@ export default function TaskCard(props: TaskCardProps): JSX.Element {
         <Card.Title>
           <Row className="justify-content-between">
             <Col xs="auto">
-              {task.globalPicture ? <img src={task.globalPicture} width={50} height={50} alt="Profile picture"/>
+              {task.globalPicture ? <img src={task.globalPicture} width={50} height={50} alt=""/>
                 : <FontAwesomeIcon icon={task.category === "task" ? faClipboardList : faUsers}/>
               }
             </Col>
