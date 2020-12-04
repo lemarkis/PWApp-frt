@@ -1,20 +1,22 @@
-.input-group>.input-group-prepend {
-    flex: 0 0 21%;
-}
-.input-group-text {
-    width: 100%;
-}
-
-.input-group {
-    width: 90% !important;
-}
-
-#deadlineInput {
-    height: 40px !important;
-    width: 100%;
-}
 
 #cam {
     background: #61dafb;
 }
 
+.app {
+    background: linear-gradient(#562d81, #158ace) !important;
+}
+
+#app {
+    background: linear-gradient(#562d81, #158ace) !important;
+}
+
+.react-datepicker__input-container input {
+    height: 40px;
+    border: 1px solid #ced4da;
+}
+
+.quill {
+    height: 90px;
+    width: 110%;
+}

@@ -15,7 +15,7 @@ import 'moment/locale/fr';
 import {IReminders} from '../../models/task.model';
 
 import addNotification from "react-push-notification";
-import './../../index.scss'
+import './../../components/Form.css'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faSave, faMinusCircle, faPlusCircle} from "@fortawesome/free-solid-svg-icons";
 
@@ -190,6 +190,9 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
                     </Form.Group>
                   </Form.Row>
                   <Form.Row>
+                    <br/>
+                  </Form.Row>
+                  <Form.Row>
                     <Form.Group as={Col}>
                       <InputGroup>
                         <InputGroup.Prepend>
@@ -221,7 +224,6 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
                       </InputGroup>
                       <br/>
                       <br/>
-                      <br/>
                     </Form.Group>
                   </Form.Row>
                   <Form.Row>
@@ -236,7 +238,7 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
                           timeIntervals={15}
                           showTimeSelect
                           dateFormat="dd MMM yyyy HH:mm"
-                        />
+                            />
                       </InputGroup>
                     </Form.Group>
                   </Form.Row>

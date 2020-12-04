@@ -38,6 +38,7 @@ export default function TaskCardView(props: TaskCardViewProps): JSX.Element {
                 <p>Le <strong>{moment(task.deadline).format('MMMM Do YYYY, h:mm:ss a')}</strong></p>
                 : <p>Vous n'avez pas renseigné de date pour la fin des cette tâche</p>}
               <br/>
+              <strong>Description:</strong>
               {task.description ? <p dangerouslySetInnerHTML={{__html: task.description}}/> :
                 <p> Vous n'avez pas donner de description a cette tâche.</p>}
               <br/>
@@ -61,7 +62,7 @@ export default function TaskCardView(props: TaskCardViewProps): JSX.Element {
               <p>Le <strong>{moment(task.deadline).format('MMMM Do YYYY, h:mm:ss a')}</strong></p>
               : <p>Vous n'avez pas renseigné de date pour la fin des cette tâche</p>}
             <br/>
-            <p>Description:</p>
+            <strong>Description:</strong>
             {task.description ? <p dangerouslySetInnerHTML={{__html: task.description}}/> :
               <p> Vous n'avez pas donner de description a cette tâche.</p>}
             <br/>
