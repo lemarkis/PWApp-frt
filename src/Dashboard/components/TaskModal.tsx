@@ -59,11 +59,14 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
     }).then(() => {
         addNotification({
           title: 'Information',
-          subtitle: 'Votre tache a bien était créer.',
+          subtitle: 'Votre tâche a bien été créer.',
           message: 'Votre Tâche a bien été créer / modifier ',
           theme: 'darkblue',
         })
-        setDescription('')
+        setDescription('');
+        setTask({...task, 'title': ''});
+        setTask({...task, 'deadline': undefined})
+        setReminderDate(null)
         onHide();
       }
     ).catch((e) => {
@@ -95,13 +98,14 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
     }
     task.reminders.push(reminder);
     setShowDate(false);
+    setReminderDate(null)
   }
 
   const removeReminder = (reminder: IReminders) => {
     const index = task.reminders?.findIndex(x => x.id === reminder.id)
     if (index !== undefined) {
       task.reminders?.splice(index, 1);
-      setTask(task);
+      setTask({...task, 'reminder': task.reminders});
     }
   }
 
@@ -227,7 +231,7 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
                           <InputGroup.Text id="deadline">Date d'échéance</InputGroup.Text>
                         </InputGroup.Prepend>
                         <DatePicker
-                          selected={task.deadline ? moment(task.deadline).toDate() : moment().toDate()}
+                          selected={task.deadline ? moment(task.deadline).toDate() : undefined}
                           onChange={handleDeadlineChange}
                           timeIntervals={15}
                           showTimeSelect

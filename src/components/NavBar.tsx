@@ -3,7 +3,7 @@ import { Button, Dropdown, Nav, Navbar, NavItem, NavLink } from 'react-bootstrap
 import { useAuth0 } from '@auth0/auth0-react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faPowerOff, faSignInAlt } from "@fortawesome/free-solid-svg-icons";
-
+import './../index.scss'
 
 const NavBar = () => {
   const {
@@ -41,7 +41,7 @@ const NavBar = () => {
   )
 
   const NavDisconnected = () => (
-    <Button id="qsLoginBtn" onClick={() => loginWithRedirect().then(res => console.log(res))} color="success">
+    <Button variant="outline-secondary" id="qsLoginBtn" onClick={() => loginWithRedirect().then(res => console.log(res))} color="success">
       <FontAwesomeIcon icon={faSignInAlt} fixedWidth className="pr-1" />Connexion
     </Button>
   )
@@ -51,7 +51,7 @@ const NavBar = () => {
       <Navbar.Brand href="/">
         <img
           src="/logo.png"
-          height="40"
+          height="50"
           className="d-inline-block align-top"
           alt="What's Next"
         />

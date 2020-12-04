@@ -76,11 +76,18 @@ export default function Dashboard(): JSX.Element {
 
   return (
     <div>
+      <br/>
       <Row className="justify-content-center">
         <Col xs="auto">
-          <h1>What's Next ?</h1>
+          <img
+            src="/logo.png"
+            height="100"
+            className="d-inline-block align-top"
+            alt="What's Next"
+          />
         </Col>
       </Row>
+      <br/>
       <CardColumns>
         {taskList.map((task: ITask) => <TaskCard key={task.id} task={task} getUserList={getUserList} showModal={setShowModal} showView={setShowView}  setCurrentTask={setCurrentTask} />)}
       </CardColumns>

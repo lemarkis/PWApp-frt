@@ -1,9 +1,9 @@
 import React from 'react';
-import {ITask} from "../../models/task.model";
+import {IReminders, ITask} from "../../models/task.model";
 import {Badge, Button, Col, Container, Form, InputGroup, Modal, Row} from "react-bootstrap";
 import moment from "moment";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faClipboardList, faUsers} from "@fortawesome/free-solid-svg-icons";
+import {faClipboardList, faMinusCircle, faUsers} from "@fortawesome/free-solid-svg-icons";
 
 interface TaskCardViewProps {
   task: ITask;
@@ -17,76 +17,68 @@ export default function TaskCardView(props: TaskCardViewProps): JSX.Element {
   return (
     <Modal
       show={show}
+      size="lg"
       onHide={onHide}
-      size="xl"
       centered
     >
       <Modal.Header closeButton>
         <Modal.Title id="taskModal">
           <FontAwesomeIcon icon={task.category === "task" ? faClipboardList : faUsers}/>
-          {"   "  + task.title} </Modal.Title>
+          {"   " + task.title} </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Row>
-          {task.globalPicture ?
+        {task.globalPicture ?
+          <Row>
             <Col className="align-self-center mr-auto">
               <img src={task.globalPicture} width={400} height={400} alt="Profile picture"/>
             </Col>
-            : <Col></Col>
-          }
-          <Col className="align-self-center mr-auto">
-            <Form.Row>
-              <Form.Group as={Col}>
-                <InputGroup>
-                  <InputGroup.Prepend>
-                    <h2><Badge variant="secondary">Category</Badge></h2>
-                  </InputGroup.Prepend>
-                  <h4>{task.category === "meeting" ? <p> Réunion</p> : <p> Tâche à faire</p>}</h4>
-                </InputGroup>
-              </Form.Group>
-            </Form.Row>
-            <Form.Row>
-              <Form.Group as={Col}>
-                <InputGroup>
-                  <InputGroup.Prepend>
-                    <h2><Badge variant="secondary">Description</Badge></h2>
-                  </InputGroup.Prepend>
-                  {task.description ? <p dangerouslySetInnerHTML={{ __html: task.description }} /> :
-                    <p> Vous n'avez pas donner de description a cette tâche.</p>}
-                </InputGroup>
-              </Form.Group>
-            </Form.Row>
-            <Form.Row>
-              <Form.Group as={Col}>
-                <InputGroup>
-                  <InputGroup.Prepend>
-                    <h2><Badge variant="secondary">Date d'échéance</Badge></h2>
-                  </InputGroup.Prepend>
-                  {task.deadline ?
-                    <p>Cette tâche doit être effectuer avant
-                      le {moment(task.deadline).format('MMMM Do YYYY, h:mm:ss a')}</p>
-                    : <p>Vous n'avez pas renseigné de date pour la fin des cette tâche</p>}
-                </InputGroup>
-              </Form.Group>
-            </Form.Row>
-          </Col>
-          <Col></Col>
-        </Row>
-      </Modal.Body>
-      <Modal.Footer>
-        {task.category === "meeting" &&
-        <Form.Group as={Col}>
-            <InputGroup>
-                <InputGroup.Prepend>
-                    <h2><Badge variant="secondary">Addresse</Badge></h2>
-                </InputGroup.Prepend>
-                <p>{task.location
-                  ? <p> La réunion a lieu sur: {task.location}</p>
-                  : <p>Aucune addresse de renseigner pour cette réunion.</p>}</p>
-            </InputGroup>
-        </Form.Group>
+            <Col xs={4}>
+              <h1>{task.category === "meeting" ? <p> Réunion</p> : <p> Tâche à faire</p>}</h1>
+              {task.deadline ?
+                <p>Le <strong>{moment(task.deadline).format('MMMM Do YYYY, h:mm:ss a')}</strong></p>
+                : <p>Vous n'avez pas renseigné de date pour la fin des cette tâche</p>}
+              <br/>
+              {task.description ? <p dangerouslySetInnerHTML={{__html: task.description}}/> :
+                <p> Vous n'avez pas donner de description a cette tâche.</p>}
+              <br/>
+              <p>{task.location
+                ? <p> La réunion a lieu sur: {task.location}</p>
+                : <p>Aucune addresse de renseigner pour cette réunion.</p>}</p>
+              <br/>
+              <p>Des rappels seront envoyés sur ces dates:</p>
+              <p>{task.reminders?.map((reminder: IReminders) => {
+                return (
+                  <p>Le <strong>{moment(reminder.date).format('LLLL').toString()}</strong></p>
+                )
+              })
+              }</p>
+            </Col>
+            <Col></Col>
+          </Row>
+          : <Container>
+            <h1>{task.category === "meeting" ? <p> Réunion</p> : <p> Tâche à faire</p>}</h1>
+            {task.deadline ?
+              <p>Le <strong>{moment(task.deadline).format('MMMM Do YYYY, h:mm:ss a')}</strong></p>
+              : <p>Vous n'avez pas renseigné de date pour la fin des cette tâche</p>}
+            <br/>
+            <p>Description:</p>
+            {task.description ? <p dangerouslySetInnerHTML={{__html: task.description}}/> :
+              <p> Vous n'avez pas donner de description a cette tâche.</p>}
+            <br/>
+            <p>{task.location
+              ? <p> La réunion a lieu sur: {task.location}</p>
+              : <p>Aucune addresse de renseigner pour cette réunion.</p>}</p>
+            <br/>
+            <p>Des rappels seront envoyés sur ces dates:</p>
+            <p>{task.reminders?.map((reminder: IReminders) => {
+              return (
+                <p>Le <strong>{moment(reminder.date).format('LLLL').toString()}</strong></p>
+              )
+            })
+            }</p>
+          </Container>
         }
-      </Modal.Footer>
+      </Modal.Body>
     </Modal>
   )
 }
