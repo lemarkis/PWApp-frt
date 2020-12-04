@@ -29,9 +29,6 @@ const NavBar = () => {
       </Dropdown.Toggle>
       <Dropdown.Menu>
         <Dropdown.Header>{user.name}</Dropdown.Header>
-        <Dropdown.Item href="/profile">
-          <FontAwesomeIcon icon={faUser} className="mr-3" />Profil
-        </Dropdown.Item>
         <Dropdown.Divider />
         <Dropdown.Item onClick={() => logoutWithRedirect()}>
           <FontAwesomeIcon icon={faPowerOff} className="mr-3 text-danger" />Déconnexion

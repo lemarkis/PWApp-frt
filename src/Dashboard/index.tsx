@@ -27,18 +27,29 @@ export default function Dashboard(): JSX.Element {
   const [showView, setShowView] = useState(false);
   const [currentTask, setCurrentTask] = useState(emptyTask);
 
+  const getUserList = (): void => {
+    getAccessTokenSilently().then((token) => {
+      api.get('/api/task', {
+        headers: { 'Authorization': `Bearer ${token}`},
+      }).then((res: AxiosResponse<any>) => {
+        setTaskList(res.data);
+        checkDate();
+      }).catch(err => console.log(err.toJSON()));
+    });
+  }
+
   useEffect(() => {
     getUserList()
   }, [getAccessTokenSilently]);
 
   const checkDate = (): void => {
     const date = moment().format('MMMM Do YYYY');
-    taskList.map((task: ITask) => {
+    taskList.forEach((task: ITask) => {
       if (task.deadline) {
         let tmp = moment(task.deadline).format('MMMM Do YYYY')
         console.log(date)
         console.log(tmp)
-        if (date == tmp) {
+        if (date === tmp) {
           addNotification({
             title: 'Information',
             subtitle: 'Vous avez une tache aujourd\'hui à ' + moment(task.deadline).format('h:mm:ss a'),
@@ -50,17 +61,6 @@ export default function Dashboard(): JSX.Element {
       }
       console.log(task)
     })
-  }
-
-  const getUserList = (): void => {
-    getAccessTokenSilently().then((token) => {
-      api.get('/api/task', {
-        headers: { 'Authorization': `Bearer ${token}`},
-      }).then((res: AxiosResponse<any>) => {
-        setTaskList(res.data);
-        checkDate();
-      }).catch(err => console.log(err.toJSON()));
-    });
   }
 
   const onHide = (): void => {

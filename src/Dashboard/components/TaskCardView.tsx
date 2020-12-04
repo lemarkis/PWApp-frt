@@ -32,7 +32,7 @@ export default function TaskCardView(props: TaskCardViewProps): JSX.Element {
             <Col className="align-self-center mr-auto">
               <img src={task.globalPicture} width={400} height={400} alt="Profile picture"/>
             </Col>
-            <Col xs={4}>
+            <Col xs={5}>
               <h1>{task.category === "meeting" ? <p> Réunion</p> : <p> Tâche à faire</p>}</h1>
               {task.deadline ?
                 <p>Le <strong>{moment(task.deadline).format('MMMM Do YYYY, h:mm:ss a')}</strong></p>
@@ -49,7 +49,7 @@ export default function TaskCardView(props: TaskCardViewProps): JSX.Element {
               <p>Des rappels seront envoyés sur ces dates:</p>
               <p>{task.reminders?.map((reminder: IReminders) => {
                 return (
-                  <p>Le <strong>{moment(reminder.date).format('LLLL').toString()}</strong></p>
+                  <p>- <strong>{moment(reminder.date).format('LLLL').toString()}</strong></p>
                 )
               })
               }</p>

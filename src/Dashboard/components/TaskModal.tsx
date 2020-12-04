@@ -89,16 +89,26 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
   }
 
   const addReminder = () => {
-    if (!task.reminders) {
-      task.reminders = [];
+    console.log(Date.parse(moment(task.deadline).toDate().toString()))
+    console.log(Date.parse(moment(reminderDate).toDate().toString()))
+    if (Date.parse(moment(task.deadline).toDate().toString()) < Date.parse(moment(reminderDate).toDate().toString())) {
+      addNotification({
+        title: 'Attention',
+        subtitle: 'Votre rappel ne doit pas dépasser la date de rendu de votre tâche.',
+        theme: 'red',
+      })
+    } else if (reminderDate) {
+      if (!task.reminders) {
+        task.reminders = [];
+      }
+      const reminder: IReminders = {
+        id: generateId(),
+        date: reminderDate,
+      }
+      task.reminders.push(reminder);
+      setShowDate(false);
+      setReminderDate(null)
     }
-    const reminder: IReminders = {
-      id: generateId(),
-      date: reminderDate,
-    }
-    task.reminders.push(reminder);
-    setShowDate(false);
-    setReminderDate(null)
   }
 
   const removeReminder = (reminder: IReminders) => {
