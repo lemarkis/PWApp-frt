@@ -1,9 +1,9 @@
 import React from 'react';
 import {IReminders, ITask} from "../../models/task.model";
-import {Badge, Button, Col, Container, Form, InputGroup, Modal, Row} from "react-bootstrap";
+import {Col, Container, Modal, Row} from "react-bootstrap";
 import moment from "moment";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faClipboardList, faMinusCircle, faUsers} from "@fortawesome/free-solid-svg-icons";
+import {faClipboardList, faUsers} from "@fortawesome/free-solid-svg-icons";
 
 interface TaskCardViewProps {
   task: ITask;
@@ -30,7 +30,7 @@ export default function TaskCardView(props: TaskCardViewProps): JSX.Element {
         {task.globalPicture ?
           <Row>
             <Col className="align-self-center mr-auto">
-              <img src={task.globalPicture} width={400} height={400} alt="Profile picture"/>
+              <img src={task.globalPicture} width={400} height={400} alt=""/>
             </Col>
             <Col xs={5}>
               <h1>{task.category === "meeting" ? <p> Réunion</p> : <p> Tâche à faire</p>}</h1>

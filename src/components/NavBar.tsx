@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Dropdown, Nav, Navbar, NavItem, NavLink } from 'react-bootstrap';
 import { useAuth0 } from '@auth0/auth0-react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faPowerOff, faSignInAlt } from "@fortawesome/free-solid-svg-icons";
+import {faPowerOff, faSignInAlt } from "@fortawesome/free-solid-svg-icons";
 import './../index.scss'
 
 const NavBar = () => {
