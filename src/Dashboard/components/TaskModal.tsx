@@ -34,8 +34,7 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
   const [isAuthorized, setAuthorized] = useState(false);
   const [description, setDescription] = useState('');
   const [showDate, setShowDate] = useState(false);
-  const [remindertDate, setRemindertDate] = useState<Date | null>(new Date());
-  const [reminderNumber, setReminderNumber] = useState(0)
+  const [reminderDate, setReminderDate] = useState<Date | null>(new Date());
 
   const handleChange = ({target}: React.ChangeEvent<HTMLInputElement>): void => {
     setTask({...task, [target.name]: target.value});
@@ -51,12 +50,10 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
     setTask({...task, globalPicture})
   }
 
-
   const submitTask = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     task.description = description;
     const token = await getAccessTokenSilently();
-    console.log(task)
     api.post('/api/task', task, {
       headers: {'Authorization': `Bearer ${token}`},
     }).then(() => {
@@ -80,46 +77,32 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
       console.log("Error: " + e)
     });
   }
+
   const generateId = () => {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      var r = Math.random() * 16 | 0, v = c === 'x' ? r : ((r & 0x3) | 0x8);
       return v.toString(16);
     });
   }
+
   const addReminder = () => {
-    console.log(task)
     if (!task.reminders) {
-      const init = {
-        id: generateId(),
-        date: remindertDate
-      }
-      task['reminders'] = [ init ];
-      setReminderNumber(1)
-    } else if (task.reminders) {
-      const reminder: IReminders = {
-        id: generateId(),
-        date: remindertDate
-      }
-      task.reminders.push(reminder);
-      setReminderNumber(task.reminders.length + 1)
+      task.reminders = [];
     }
-    setRemindertDate(null)
-    setShowDate(false)
-    console.log(task)
+    const reminder: IReminders = {
+      id: generateId(),
+      date: reminderDate,
+    }
+    task.reminders.push(reminder);
+    setShowDate(false);
   }
 
   const removeReminder = (reminder: IReminders) => {
-      console.log("BEFORE")
-      console.log(reminder)
-      console.log(reminder.id)
-    console.log(task.reminders)
-      const index = task.reminders?.findIndex(x => x.id === reminder.id)
-      console.log(reminder)
-      if (index !== undefined) {
-        task.reminders?.splice(index, 1)
-        setTask(task)
-      }
-      console.log(task)
+    const index = task.reminders?.findIndex(x => x.id === reminder.id)
+    if (index !== undefined) {
+      task.reminders?.splice(index, 1);
+      setTask(task);
+    }
   }
 
   return (
@@ -140,11 +123,11 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
               {isAuthorized
                 ?
                 <Container fluid={"sm"}>
-                  <Camera imageType={IMAGE_TYPES.JPG}
+                  <Camera
+                    imageType={IMAGE_TYPES.JPG}
                           imageCompression={1}
-                          onTakePhoto={(e) => {
-                            handleTakePhoto(e);
-                          }}/>
+                    onTakePhoto={(e) => handleTakePhoto(e)}
+                  />
                           <Row>
                             <Col></Col>
                             <Col xs={1}>
@@ -292,11 +275,11 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
                                   </Row>
                                 )
                               })}
-                              {showDate
-                                ? <Row>
+                              {showDate &&
+                                <Row>
                                   <DatePicker
-                                    selected={remindertDate}
-                                    onChange={(date: Date) => setRemindertDate(date)}
+                                    selected={reminderDate}
+                                    onChange={(date: Date) => setReminderDate(date)}
                                     timeIntervals={15}
                                     showTimeSelect
                                     withPortal
@@ -306,14 +289,12 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
                                     <FontAwesomeIcon icon={faSave}/>
                                   </Button>
                                 </Row>
-                                : <></>
                               }
-                              { ( reminderNumber <= 5 && showDate === false ) ?
+                              {(task.reminders && task.reminders.length < 5 && showDate === false) &&
                                 <Button size="sm" variant="outline-success" title="Ajouter"
                                         onClick={() => setShowDate(true)}>
                                   <FontAwesomeIcon icon={faPlusCircle}/>
                                 </Button>
-                                : <></>
                               }
                             </Card.Body>
                           </Accordion.Collapse>

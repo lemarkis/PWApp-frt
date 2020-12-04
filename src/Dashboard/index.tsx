@@ -17,7 +17,7 @@ import addNotification from "react-push-notification";
 const emptyTask: ITask = {
   category: 'task',
   title: '',
-  reminders: [{id:0, date: null}]
+  reminders: [],
 }
 
 export default function Dashboard(): JSX.Element {

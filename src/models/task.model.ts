@@ -1,5 +1,5 @@
 export interface IReminders {
-  id?: number;
+  id?: string;
   date: Date | null;
 }
 
@@ -11,7 +11,7 @@ export interface ITask {
   description?: string;
   deadline?: Date;
   location?: string;
-  reminders: [IReminders];
+  reminders?: IReminders[];
   status?: string;
   [key: string]: any;
 }
