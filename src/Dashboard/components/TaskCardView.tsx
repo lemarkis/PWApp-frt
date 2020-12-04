@@ -1,9 +1,6 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {ITask} from "../../models/task.model";
 import {Badge, Button, Col, Container, Form, InputGroup, Modal, Row} from "react-bootstrap";
-import Camera, {IMAGE_TYPES} from "react-html5-camera-photo";
-import ReactQuill from "react-quill";
-import DatePicker from "react-datepicker";
 import moment from "moment";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faClipboardList, faUsers} from "@fortawesome/free-solid-svg-icons";
@@ -35,7 +32,7 @@ export default function TaskCardView(props: TaskCardViewProps): JSX.Element {
             <Col className="align-self-center mr-auto">
               <img src={task.globalPicture} width={400} height={400} alt="Profile picture"/>
             </Col>
-            : <></>
+            : <Col></Col>
           }
           <Col className="align-self-center mr-auto">
             <Form.Row>
@@ -73,6 +70,7 @@ export default function TaskCardView(props: TaskCardViewProps): JSX.Element {
               </Form.Group>
             </Form.Row>
           </Col>
+          <Col></Col>
         </Row>
       </Modal.Body>
       <Modal.Footer>

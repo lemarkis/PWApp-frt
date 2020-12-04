@@ -11,13 +11,15 @@ import 'react-quill/dist/quill.snow.css'; // ES6
 import {useAuth0} from '@auth0/auth0-react';
 import api from '../../utils/api';
 import moment from 'moment';
+import 'moment/locale/fr';
 import {IReminders} from '../../models/task.model';
 
 import addNotification from "react-push-notification";
 import './../../index.scss'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faTrash, faPlusCircle} from "@fortawesome/free-solid-svg-icons";
+import {faSave, faMinusCircle, faPlusCircle} from "@fortawesome/free-solid-svg-icons";
 
+moment.locale("fr");         // fr
 
 interface TaskModalProps {
   task: ITask;
@@ -78,27 +80,46 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
       console.log("Error: " + e)
     });
   }
-
+  const generateId = () => {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
   const addReminder = () => {
     console.log(task)
-    if (task.reminders) {
+    if (!task.reminders) {
+      const init = {
+        id: generateId(),
+        date: remindertDate
+      }
+      task['reminders'] = [ init ];
+      setReminderNumber(1)
+    } else if (task.reminders) {
       const reminder: IReminders = {
-        id: task.reminders.length + 1,
+        id: generateId(),
         date: remindertDate
       }
       task.reminders.push(reminder);
       setReminderNumber(task.reminders.length + 1)
-    } else if (task) {
-      const init = {
-        id: 1,
-        date: remindertDate
-      }
-      task['reminders'] = [init];
-      setReminderNumber(1)
     }
     setRemindertDate(null)
     setShowDate(false)
     console.log(task)
+  }
+
+  const removeReminder = (reminder: IReminders) => {
+      console.log("BEFORE")
+      console.log(reminder)
+      console.log(reminder.id)
+    console.log(task.reminders)
+      const index = task.reminders?.findIndex(x => x.id === reminder.id)
+      console.log(reminder)
+      if (index !== undefined) {
+        task.reminders?.splice(index, 1)
+        setTask(task)
+      }
+      console.log(task)
   }
 
   return (
@@ -142,13 +163,6 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
                         <InputGroup.Prepend>
                           <InputGroup.Text id="profilePicture">Image de profile</InputGroup.Text>
                         </InputGroup.Prepend>
-                        <Col xs={5}>
-                          <Form.File
-                            onChange={(e: any) => handleTakePhoto(e.target.files[0])}/>
-                        </Col>
-                        <Col xs={1}>
-                          <p>Or</p>
-                        </Col>
                         <Col xs="auto">
                           <Button onClick={() => setAuthorized(true)}> Take picture</Button>
                         </Col>
@@ -180,6 +194,7 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
                           <InputGroup.Text id="inputGroup-sizing-default">Titre</InputGroup.Text>
                         </InputGroup.Prepend>
                         <Form.Control
+                          required
                           name="title"
                           value={task.title}
                           onChange={handleChange}
@@ -234,7 +249,6 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
                           timeIntervals={15}
                           showTimeSelect
                           dateFormat="dd MMM yyyy HH:mm"
-                          // customInput={<DateInput />}
                         />
                       </InputGroup>
                     </Form.Group>
@@ -264,9 +278,19 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
                           </Accordion.Toggle>
                           <Accordion.Collapse eventKey="0">
                             <Card.Body>
-                              {task.reminders.map((reminder: IReminders) => {
-                                <p>Hello world</p>
-                                  moment(reminder.date).toDate()
+                              {task.reminders?.map((reminder: IReminders) => {
+                                return (
+                                  <Row key={reminder.id}>
+                                    <Col>
+                                      <p>{moment(reminder.date).format('LLLL').toString()}</p>
+                                    </Col>
+                                    <Col>
+                                      <Button size="sm" variant="outline-danger" onClick={() => removeReminder(reminder)}>
+                                        <FontAwesomeIcon icon={faMinusCircle}/>
+                                      </Button>
+                                    </Col>
+                                  </Row>
+                                )
                               })}
                               {showDate
                                 ? <Row>
@@ -279,7 +303,7 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
                                     dateFormat="dd MMM yyyy HH:mm"
                                   />
                                   <Button size="sm" variant="outline-success" title="Ajouter" onClick={addReminder}>
-                                    <FontAwesomeIcon icon={faPlusCircle}/>
+                                    <FontAwesomeIcon icon={faSave}/>
                                   </Button>
                                 </Row>
                                 : <></>
