@@ -44,16 +44,14 @@ registerRoute(
 
 self.addEventListener('push', push => {
   const notif = push?.data?.json().notification;
-  console.log(notif);
-  // push.
-  // addNotification({
-  //   title: push.title,
-  //   vibrate: push.vibrate,
-  //   subtitle: 'Vous avez souscrit au notifications.',
-  //   message: push.body,
-  //   theme: 'darkblue',
-  //   native: true
-  // })
+  addNotification({
+    title: notif.title,
+    vibrate: notif.vibrate,
+    subtitle: 'Rappel',
+    message: notif.body,
+    theme: 'darkblue',
+    native: true
+  })
 });
 
 self.addEventListener('notificationclick', event => {
