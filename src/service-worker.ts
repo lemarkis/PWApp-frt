@@ -51,7 +51,7 @@ self.addEventListener('push', push => {
     message: notif.body,
     theme: 'darkblue',
     native: true
-  })
+  });
 });
 
 self.addEventListener('notificationclick', event => {
