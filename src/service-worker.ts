@@ -43,7 +43,7 @@ registerRoute(
 );
 
 self.addEventListener('push', push => {
-  const notif = push.data.json().notification;
+  const notif = push?.data?.json().notification;
   console.log(notif);
   // push.
   // addNotification({
