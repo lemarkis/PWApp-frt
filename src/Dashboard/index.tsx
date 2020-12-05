@@ -11,8 +11,6 @@ import { useAuth0 } from '@auth0/auth0-react';
 
 import "./../components/Form.css"
 import TaskCardView from "./components/TaskCardView";
-import moment from "moment";
-import addNotification from "react-push-notification";
 
 const emptyTask: ITask = {
   category: 'task',
@@ -33,7 +31,6 @@ export default function Dashboard(): JSX.Element {
         headers: { 'Authorization': `Bearer ${token}`},
       }).then((res: AxiosResponse<any>) => {
         setTaskList(res.data);
-        checkDate();
       }).catch(err => console.log(err.toJSON()));
     });
   }
@@ -47,27 +44,6 @@ export default function Dashboard(): JSX.Element {
       }).catch(err => console.log(err.toJSON()));
     });
   }, [getAccessTokenSilently]);
-
-  const checkDate = (): void => {
-    const date = moment().format('MMMM Do YYYY');
-    taskList.forEach((task: ITask) => {
-      if (task.deadline) {
-        let tmp = moment(task.deadline).format('MMMM Do YYYY')
-        console.log(date)
-        console.log(tmp)
-        if (date === tmp) {
-          addNotification({
-            title: 'Information',
-            subtitle: 'Vous avez une tache aujourd\'hui à ' + moment(task.deadline).format('h:mm:ss a'),
-            message: 'Votre Tâche a bien été créer / modifier ',
-            theme: 'darkblue',
-            native: true // when using native, your OS will handle theming.
-          })
-        }
-      }
-      console.log(task)
-    })
-  }
 
   const onHide = (): void => {
     setShowModal(false);

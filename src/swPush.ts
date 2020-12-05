@@ -17,11 +17,6 @@ const urlBase64ToUint8Array = (base64String: string): Uint8Array => {
   return outputArray;
 };
 
-// const subscription = await registration.pushManager.subscribe({
-//   userVisibleOnly: true,
-//   applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
-// });
-
 class swPush {
   public askNotificationPermission = async (): Promise<NotificationPermission> => {
     return await Notification.requestPermission();
