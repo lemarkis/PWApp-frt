@@ -33,12 +33,14 @@ class swPush {
         }).then(function (subscription) {
           api.post('/api/push/subscribe', subscription, {
             headers: {'Authorization': `Bearer ${token}`},
-          }).then(() => {
-            addNotification({
-              title: 'Information',
-              subtitle: 'Vous avez souscrit au notifications.',
-              theme: 'darkblue',
-            })
+          }).then((res) => {
+            if (res !== null) {
+              addNotification({
+                title: 'Information',
+                subtitle: 'Vous avez souscrit au notifications.',
+                theme: 'darkblue',
+              })
+            }
           }).catch((e) => {
             addNotification({
               title: 'Information',
