@@ -44,6 +44,7 @@ registerRoute(
 
 self.addEventListener('push', push => {
   const notif = push?.data?.json().notification;
+  console.log(notif);
   navigator.serviceWorker.ready.then((sw) => {
     sw.showNotification('What\'s Next', notif);
   });
