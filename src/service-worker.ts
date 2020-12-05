@@ -1,11 +1,12 @@
 /// <reference lib="webworker" />
 
 import addNotification from "react-push-notification";
-import { clientsClaim } from "workbox-core";
-import { ExpirationPlugin } from "workbox-expiration";
-import { createHandlerBoundToURL, precacheAndRoute } from "workbox-precaching";
-import { registerRoute } from "workbox-routing";
-import { StaleWhileRevalidate } from "workbox-strategies";
+import {clientsClaim} from "workbox-core";
+import {ExpirationPlugin} from "workbox-expiration";
+import {createHandlerBoundToURL, precacheAndRoute} from "workbox-precaching";
+import {registerRoute} from "workbox-routing";
+import {StaleWhileRevalidate} from "workbox-strategies";
+import {PushNotification} from "react-push-notification/dist/notifications/Storage";
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -15,7 +16,7 @@ precacheAndRoute(self.__WB_MANIFEST);
 
 const fileExtensionRegexp = new RegExp('/[^/?]+\\.[^/]+$');
 registerRoute(
-  ({ request, url }: {request: Request, url: URL}) => {
+  ({request, url}: { request: Request, url: URL }) => {
     if (request.mode !== 'navigate') {
       return false;
     }
@@ -32,25 +33,35 @@ registerRoute(
 );
 
 registerRoute(
-  ({ url }) => url.origin === self.location.origin && url.pathname.endsWith('.png'),
+  ({url}) => url.origin === self.location.origin && url.pathname.endsWith('.png'),
   new StaleWhileRevalidate({
     cacheName: 'images',
     plugins: [
-      new ExpirationPlugin({ maxEntries: 100 }),
+      new ExpirationPlugin({maxEntries: 100}),
     ],
   })
 );
 
-self.addEventListener('push', (push) => {
-  // addNotification();
+self.addEventListener('push', push => {
+  console.log(push)
+  // push.
+  // addNotification({
+  //   title: push.title,
+  //   vibrate: push.vibrate,
+  //   subtitle: 'Vous avez souscrit au notifications.',
+  //   message: push.body,
+  //   theme: 'darkblue',
+  //   native: true
+  // })
 });
 
 self.addEventListener('notificationclick', event => {
-  event.waitUntil(self.clients.matchAll().then(clients => {
-    if (clients.length){ // check if at least one tab is already open
-      clients[0].focus();
-    } else {
+  if (event.action === 'close') {
+    event.notification.close()
+  } else {
+    event.waitUntil(self.clients.matchAll().then(clients => {
+      console.log(clients)
       self.clients.openWindow('/');
-    }
-  }));
+    }));
+  }
 });

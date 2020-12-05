@@ -18,7 +18,7 @@ import addNotification from "react-push-notification";
 import './../../components/Form.css'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faSave, faMinusCircle, faPlusCircle} from "@fortawesome/free-solid-svg-icons";
-import { swPush } from '../../swPush';
+import swPush from "../../swPush"
 
 moment.locale("fr");         // fr
 
@@ -46,8 +46,6 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
   }
 
   const handleTakePhoto = (globalPicture: string) => {
-    console.log('takePhoto');
-    console.log(globalPicture)
     setTask({...task, globalPicture})
   }
 
@@ -63,22 +61,19 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
           subtitle: 'Votre tâche a bien été créer.',
           message: 'Votre Tâche a bien été créer / modifier ',
           theme: 'darkblue',
-        })
-        setDescription('');
+        });
         setTask({...task, 'title': ''});
         setTask({...task, 'deadline': undefined})
         setReminderDate(undefined);
         onHide();
       }
     ).catch((e) => {
-      console.log("ERROR")
       addNotification({
         title: 'Attention',
         subtitle: 'Erreur - submitTask - Votre tache n\'a pas pus etre créer ou modifier.',
         message: 'Il semble qu\'il y est eu un problème sur la création / modification de vôtre tâche.',
         theme: 'red',
       })
-      console.log("Error: " + e)
     });
   }
 
@@ -92,32 +87,34 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
   const addReminder = async () => {
     const perm = await swPush.askNotificationPermission();
     if (perm !== 'granted') {
-      // TODO besoin des permissions notif
-    }
-    console.log(Date.parse(moment(task.deadline).toDate().toString()))
-    console.log(Date.parse(moment(reminderDate).toDate().toString()))
-    if (Date.parse(moment(task.deadline).toDate().toString()) < Date.parse(moment(reminderDate).toDate().toString())) {
       addNotification({
         title: 'Attention',
-        subtitle: 'Votre rappel ne doit pas dépasser la date de rendu de votre tâche.',
+        subtitle: 'Vous devez autorisé l\'accée au notifications pour utilisé cette fonctionnalité.',
         theme: 'red',
-      })
-    } else if (reminderDate) {
-      if (!task.reminders) {
-        task.reminders = [];
+      })    } else {
+      if (Date.parse(moment(task.deadline).toDate().toString()) < Date.parse(moment(reminderDate).toDate().toString())) {
+        addNotification({
+          title: 'Attention',
+          subtitle: 'Votre rappel ne doit pas dépasser la date de rendu de votre tâche.',
+          theme: 'red',
+        })
+      } else if (reminderDate) {
+        if (!task.reminders) {
+          task.reminders = [];
+        }
+        const reminder: IReminders = {
+          id: generateId(),
+          date: reminderDate,
+        }
+        task.reminders.push(reminder);
+        setShowDate(false);
+        setReminderDate(undefined);
       }
-      const reminder: IReminders = {
-        id: generateId(),
-        date: reminderDate,
-      }
-      task.reminders.push(reminder);
-      setShowDate(false);
-      setReminderDate(undefined);
     }
   }
 
   const removeReminder = (reminder: IReminders) => {
-    const index = task.reminders?.findIndex(x => x.id === reminder.id)
+    const index = task.reminders?.findIndex(x => x.id === reminder.id);
     if (index !== undefined) {
       task.reminders?.splice(index, 1);
       setTask({...task, 'reminder': task.reminders});
