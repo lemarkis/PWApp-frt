@@ -44,14 +44,9 @@ registerRoute(
 
 self.addEventListener('push', push => {
   const notif = push?.data?.json().notification;
-  // addNotification({
-  //   title: notif.title,
-  //   vibrate: notif.vibrate,
-  //   subtitle: 'Rappel',
-  //   message: notif.body,
-  //   theme: 'darkblue',
-  //   native: true
-  // });
+  navigator.serviceWorker.ready.then((sw) => {
+    sw.showNotification('What\'s Next', notif);
+  });
 });
 
 self.addEventListener('notificationclick', event => {
