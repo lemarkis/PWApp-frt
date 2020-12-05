@@ -18,7 +18,7 @@ import addNotification from "react-push-notification";
 import './../../components/Form.css'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faSave, faMinusCircle, faPlusCircle} from "@fortawesome/free-solid-svg-icons";
-import swPush from "../../swPush"
+import swPush from "../../swPush";
 
 moment.locale("fr");         // fr
 
@@ -91,7 +91,10 @@ export default function TaskModal(props: TaskModalProps): JSX.Element {
         title: 'Attention',
         subtitle: 'Vous devez autorisé l\'accée au notifications pour utilisé cette fonctionnalité.',
         theme: 'red',
-      })    } else {
+      });
+    } else {
+      const token = await getAccessTokenSilently();
+      swPush.subscribeToNotifications(token);
       if (Date.parse(moment(task.deadline).toDate().toString()) < Date.parse(moment(reminderDate).toDate().toString())) {
         addNotification({
           title: 'Attention',
