@@ -24,7 +24,7 @@ class swPush {
 
   public subscribeToNotifications = async (token: string): Promise<void> => {
     const perm = await this.askNotificationPermission();
-    if (perm !== 'granted') {
+    if (perm === 'granted') {
       navigator.serviceWorker.ready.then(function (serviceWorkerRegistration) {
         serviceWorkerRegistration.pushManager.subscribe({
           userVisibleOnly: true,
